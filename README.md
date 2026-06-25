@@ -29,7 +29,7 @@ Isso tudo para criar o ambiente de testes.
 ______________________________________________________________________________________________________________________
 # AULA 6
 
-Quando você alterar aglo em seu diretório você pode utilizar alguns comandos para verificar o status e fazer o commit e push para o seu github de origem. 
+Quando você alterar algo em seu diretório você pode utilizar alguns comandos para verificar o status e fazer o commit e push para o seu github de origem. 
 
 # git status 
 - mostra o nome do item que foi modificado
