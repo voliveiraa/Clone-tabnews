@@ -5,10 +5,10 @@
 
 Versões utilizadas - 
 
-# Versão do node.js - lts/hydrogen
-# Versão do next - 13.1.6
-# Versão do react - 18.2.0
-# Versão do react-dom - 18.2.0
+° Versão do node.js - lts/hydrogen
+° Versão do next - 13.1.6
+° Versão do react - 18.2.0
+° Versão do react-dom - 18.2.0
 
 
 *Foi criado o .nvmrc para padronizar a versão correta que é utilizado no Tabnews.
