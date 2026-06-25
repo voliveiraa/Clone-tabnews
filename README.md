@@ -1,2 +1,2 @@
 # Clone-tabnews
-Implementação do Tabnews para o curso.dev
+Implementação d oTabnews para o curso.dev
