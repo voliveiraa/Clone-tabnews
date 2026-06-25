@@ -30,17 +30,17 @@ ________________________________________________________________________________
 
 Quando você alterar aglo em seu diretório você pode utilizar alguns comandos para verificar o status e fazer o commit e push para o seu github de origem. 
 
-- git status 
-# mostra o nome do item que foi modificado
+# git status 
+- mostra o nome do item que foi modificado
 
-- git diff 
-# mostra a na branch a diferença do que foi alterado a "diff"erença entre o antigo e o novo
+# git diff 
+- mostra a na branch a diferença do que foi alterado a "diff"erença entre o antigo e o novo
 
-- git add (nome do item)
-# Ele adiciona o item para o stage para ser o proximo a ser realizado o commit quando dado o comando. 
+# git add (nome do item)
+- Ele adiciona o item para o stage para ser o proximo a ser realizado o commit quando dado o comando. 
 
-- git commit -emend 
-# para realizar o commid, pode se adicionar o -m e aspas simples ou duplas para escrever o comentário
+# git commit -emend 
+- para realizar o commid, pode se adicionar o -m e aspas simples ou duplas para escrever o comentário
 
-- git push -f (force)
-# git push -f de force para subir forçadamente o item para o github de origem. 
+# git push -f (force)
+- git push -f de force para subir forçadamente o item para o github de origem. 
