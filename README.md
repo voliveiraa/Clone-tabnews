@@ -49,3 +49,8 @@ Quando você alterar algo em seu diretório você pode utilizar alguns comandos 
 # git log 
 - Você consegue ver o ID e comprar com o id do ultimo commit que  você fez, se for um item que foi modificado no seu vscode local ou nuvem e ver se ele é diferente do ultimo commit registrado. Quando são o mesmo quer dizer que está tudo up-to-date.
 _________________________________________________________________________________________________________________________________________
+
+# Hospedagem 
+
+Vai ser utilizado a Versel para hospedar o nosso site. - o que facilita é que ele é a criadora do Next.js
+Quando vincular sua conta ao github ele vai instalar um robo que vai ficar de olho em seu diretório e fazer o deploy sempreque precisar. 
