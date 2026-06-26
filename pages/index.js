@@ -1,5 +1,5 @@
 function Home () {
- return <h1>Robson, compre um PS5</h1>
+ return <h1>Vinicius favorito</h1>
 }
 
 export default Home;
