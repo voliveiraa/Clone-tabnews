@@ -48,6 +48,9 @@ Quando você alterar algo em seu diretório você pode utilizar alguns comandos 
 
 # git log 
 - Você consegue ver o ID e comprar com o id do ultimo commit que  você fez, se for um item que foi modificado no seu vscode local ou nuvem e ver se ele é diferente do ultimo commit registrado. Quando são o mesmo quer dizer que está tudo up-to-date. sgit sq
+
+# git log --online
+- Ele faz o git log em uma linha, destacando o id do commit e o nome dele
 _________________________________________________________________________________________________________________________________________
 
 # Hospedagem 
@@ -55,10 +58,17 @@ ________________________________________________________________________________
 Vai ser utilizado a Versel para hospedar o nosso site. - o que facilita é que ele é a criadora do Next.js
 Quando vincular sua conta ao github ele vai instalar um robo que vai ficar de olho em seu diretório e fazer o deploy sempreque precisar. 
 
-__________________________________________________________________________________________________________________________________________
+___________________________________________________________________________________________________________________
 
 # Qual o segredo para organização de tarefas ?
 
 1- Ser Lembrado Individualmente - Lembrar individualmente o que voce precisa saber - Menor custo de produção e de menor tempo de aquecimento - Produção quant ocusta de energia e aquecimento quanto tempo você leva para ver e conferir o que precisa ser feito. Ex: criar uma lista de papel e deixar em cima da sua mesa. 
 
-2- Ser lembrado em grupo - 
+2- Ser lembrado em grupo - kambam - deixar de facil acesso para a time saber o que precisa ser feito e marcar o progresso 
+
+3 - Expandir conhecimento - trello ou github - consegue expandir o conhecimento dentro dele - no nivel 3 voce precisa criar entrar em varias barreitas 
+
+4 - Gerar metricas - voce comeca a mensurar a produtividade do incio e ao fim das pessoas 
+
+___________________________________________________________________________________________________________________
+
