@@ -54,3 +54,11 @@ ________________________________________________________________________________
 
 Vai ser utilizado a Versel para hospedar o nosso site. - o que facilita é que ele é a criadora do Next.js
 Quando vincular sua conta ao github ele vai instalar um robo que vai ficar de olho em seu diretório e fazer o deploy sempreque precisar. 
+
+__________________________________________________________________________________________________________________________________________
+
+# Qual o segredo para organização de tarefas ?
+
+1- Ser Lembrado Individualmente - Lembrar individualmente o que voce precisa saber - Menor custo de produção e de menor tempo de aquecimento - Produção quant ocusta de energia e aquecimento quanto tempo você leva para ver e conferir o que precisa ser feito. Ex: criar uma lista de papel e deixar em cima da sua mesa. 
+
+2- Ser lembrado em grupo - 
