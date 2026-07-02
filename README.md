@@ -7,8 +7,8 @@
 Versões utilizadas -
 
 ° Versão do node.js - lts/hydrogen
-° Versão do next - 13.1.6
-° Versão do react - 18.2.0
+° Versão do next - 13.1.6 - controla e orquestra tudo o que está acontecendo (limites de cada coisa back e front end)
+° Versão do react - 18.2.0 - responsável por criar colocar os itens
 ° Versão do react-dom - 18.2.0
 
 *Foi criado o .nvmrc para padronizar a versão correta que é utilizado no Tabnews.
@@ -20,7 +20,21 @@ Para teste de execução de inicio foi verificardo as versões de cada tool - no
 
 2 - Foi criado o package.jason
 
-# Com o comando npm init, nele foi selecionado as verções acima.
+O package-lock.json é criado automaticamente pelo npm quando você instala dependências no seu projeto. A diferença entre eles é que:
+
+O package.json tem uma visão mais macro do projeto, salvando informações gerais e as dependências principais (com possibilidade de aceitar versões compatíveis);
+
+Já o package-lock.json congela a versão exata de cada dependência e subdependência, garantindo que todos que clonarem o projeto terão exatamente o mesmo ambiente.
+
+# npm
+
+O NPM (Node Package Manager) é o gerenciador de pacotes do Node.js
+npm init
+npm install next@version
+npm install react@version
+npm install react-dom@version
+
+# index.js
 
 Para o teste foi criado um index.js para especificar uma função de home com um return do nome desejado no localhost.
 
@@ -55,7 +69,7 @@ Quando você alterar algo em seu diretório você pode utilizar alguns comandos 
 
 # git log
 
-- Você consegue ver o ID e comprar com o id do ultimo commit que você fez, se for um item que foi modificado no seu vscode local ou nuvem e ver se ele é diferente do ultimo commit registrado. Quando são o mesmo quer dizer que está tudo up-to-date. sgit sq
+- Você consegue ver o ID e comprar com o id do ultimo commit que você fez, se for um item que foi modificado no seu vscode local ou nuvem e ver se ele é diferente do ultimo commit registrado. Quando são o mesmo quer dizer que está tudo up-to-date.
 
 # git log --online
 
