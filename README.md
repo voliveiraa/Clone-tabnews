@@ -43,7 +43,7 @@ Isso tudo para criar o ambiente de testes.
 
 ---
 
-# AULA 6
+# Aula 6
 
 Quando você alterar algo em seu diretório você pode utilizar alguns comandos para verificar o status e fazer o commit e push para o seu github de origem.
 
@@ -93,5 +93,13 @@ Quando vincular sua conta ao github ele vai instalar um robo que vai ficar de ol
 3 - Expandir conhecimento - trello ou github - consegue expandir o conhecimento dentro dele - no nivel 3 voce precisa criar entrar em varias barreitas
 
 4 - Gerar metricas - voce comeca a mensurar a produtividade do incio e ao fim das pessoas
+
+---
+
+# Criando um dominio e DNS
+
+Foi acessando o website https://registro.br/ e criado um dominio - foi explicado que o DNS é o nome do dominio itendificado, por nós humanos é a URL pelos servidores e clientes é o IP.
+
+Otulizando a Versel para hospedar o website com o DNS root deles.
 
 ---
