@@ -103,3 +103,24 @@ Foi acessando o website https://registro.br/ e criado um dominio - foi explicado
 Otulizando a Versel para hospedar o website com o DNS root deles.
 
 ---
+
+# Milestone 0: Construção
+
+Foram colocado e separados em algumas issues para criação da base para a proxima milestone e concepção do projeto. Para a construção de toda a configuração para o projeto.
+
+- Definir estilização do código e configurar o editor .editorconfig
+- Colocar o site em um dominio .com.br
+- Programar pagina "Em construção"
+- Configurar o .prettierigonore
+
+# Milestone 1: Fundação
+
+Foram criados os padroes que o projeto ira seguir, a base para o projeto.
+
+- Proposta de Arquitetura e Pastas
+- Testes Automatizados
+- Banco de Dados (Local)
+- Migrations
+- Continous Integration (CI)
+- Linter de Código
+- Linter de Commits
