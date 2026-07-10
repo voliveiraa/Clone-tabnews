@@ -16,7 +16,7 @@ Nesse projeto foi rodado o comando - nvm alias defaut lts/hydrogen para deixar c
 
 Para teste de execução de inicio foi verificardo as versões de cada tool - node -v, nvm -v
 
-1-nvm install lts/hydrogen
+1- nvm install lts/hydrogen
 
 2 - Foi criado o package.jason
 
@@ -28,11 +28,11 @@ Já o package-lock.json congela a versão exata de cada dependência e subdepend
 
 # npm
 
-O NPM (Node Package Manager) é o gerenciador de pacotes do Node.js
-npm init
-npm install next@version
-npm install react@version
-npm install react-dom@version
+O NPM (Node Package Manager) é o gerenciador de pacotes do Node.js,
+npm init,
+npm install next@version,
+npm install react@version,
+npm install react-dom@version,
 
 # index.js
 
@@ -43,7 +43,7 @@ Isso tudo para criar o ambiente de testes.
 
 ---
 
-# Aula 6
+# AULA 6
 
 Quando você alterar algo em seu diretório você pode utilizar alguns comandos para verificar o status e fazer o commit e push para o seu github de origem.
 
@@ -96,31 +96,16 @@ Quando vincular sua conta ao github ele vai instalar um robo que vai ficar de ol
 
 ---
 
-# Criando um dominio e DNS
+# teste acompanhado
 
-Foi acessando o website https://registro.br/ e criado um dominio - foi explicado que o DNS é o nome do dominio itendificado, por nós humanos é a URL pelos servidores e clientes é o IP.
+Foi utilizado o jest para monitorar o funcionamento da aplicação.
+em scripts foi adcionado o test:jest e o test:watch: jest --watch. todos com aspas
+para rodar o comando é só utilizar o npm run e o jest ou test:watch
 
-Otulizando a Versel para hospedar o website com o DNS root deles.
+testes realizados
+
+test("espero que 1 seja 1", () => {
+expect(1).toBe(1);
+});
 
 ---
-
-# Milestone 0: Construção
-
-Foram colocado e separados em algumas issues para criação da base para a proxima milestone e concepção do projeto. Para a construção de toda a configuração para o projeto.
-
-- Definir estilização do código e configurar o editor .editorconfig
-- Colocar o site em um dominio .com.br
-- Programar pagina "Em construção"
-- Configurar o .prettierigonore
-
-# Milestone 1: Fundação
-
-Foram criados os padroes que o projeto ira seguir, a base para o projeto.
-
-- Proposta de Arquitetura e Pastas
-- Testes Automatizados
-- Banco de Dados (Local)
-- Migrations
-- Continous Integration (CI)
-- Linter de Código
-- Linter de Commits
