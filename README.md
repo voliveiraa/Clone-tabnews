@@ -109,3 +109,31 @@ expect(1).toBe(1);
 });
 
 ---
+
+# MVC
+
+Model - uma ferramenta que voce cria que pode ser importada quando você quiser dentro do projeto.
+
+View -
+
+Controler -
+
+---
+
+# TC39
+
+O Tc39 éo comite que especifica e regura o java script - lançou uma sesão de modulos esm que não é suportada pelo jest, porém vamos fazer ele entender via transpiling.
+https://en.wikipedia.org/wiki/ECMAScript_version_history
+
+---
+
+# veredito dos testes
+
+Foram criados a pasta tests e dentro dela criado um arquivo calculadora.test.js (o .test o jest entende que tem que monitorar), apos isso foi criado uma pasta de modelos (models) para criar os modelos que o jest vai monitorar. porém os arquivos vão ser criados apenas com .js no qual o jest não vai entender, por isso voltando no arquivos calculadora.test.js vai ser colocado a função -
+
+const calculadora = require("..caminho que vai ser monitorado");
+
+Para que quando modificado o jest ficaria monitorando.
+
+TDD - test driven development - desenvolvimento orientado a testes - os teste enfluenciam o que deve ser feito no desenvolvimento.
+voce se antecipa ao erro, já realizando os testes.
