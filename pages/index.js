@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 
 const CASOS_DATA = [
@@ -88,30 +88,17 @@ function LogoSvg() {
       <circle cx="124" cy="124" r="100" fill="url(#cedfornG1)" />
       <rect x="70" y="100" width="108" height="48" fill="#0A0D13" rx="4" />
       <circle cx="124" cy="124" r="24" fill="url(#cedfornG1)" />
-      <text
-        x="205"
-        y="150"
-        fontFamily="Space Grotesk, sans-serif"
-        fontWeight="700"
-        fontSize="70"
-        fill="url(#cedfornG1)"
-      >
+      <text x="205" y="150" fontFamily="Space Grotesk, sans-serif" fontWeight="700" fontSize="70" fill="url(#cedfornG1)">
         globo
       </text>
     </svg>
   );
 }
 
-function CaretSvg() {
+function CaretSvg({ open }) {
   return (
-    <svg className="cedforn-caret" viewBox="0 0 16 16" width="16" height="16" fill="none">
-      <path
-        d="M6 4l4 4-4 4"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg className={`cedforn-caret ${open ? "open" : ""}`} viewBox="0 0 16 16" width="16" height="16" fill="none">
+      <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -121,6 +108,8 @@ function statusBadge(item) {
 }
 
 function Home() {
+  const [openCase, setOpenCase] = useState(null);
+
   return (
     <>
       <Head>
@@ -171,20 +160,56 @@ function Home() {
               </tr>
             </thead>
             <tbody>
-              {CASOS_DATA.map((item, index) => (
-                <React.Fragment key={`${item.caso}-${index}`}>
-                  <tr className="cedforn-row">
-                    <td>
-                      <CaretSvg />
-                    </td>
-                    <td className="cedforn-fornecedor">{item.fornecedor}</td>
-                    <td className="cedforn-caso">CASE {item.caso}</td>
-                    <td className="cedforn-titulo">{item.titulo}</td>
-                    <td className="cedforn-equip">{item.equipamento}</td>
-                    <td>{statusBadge(item)}</td>
-                  </tr>
-                </React.Fragment>
-              ))}
+              {CASOS_DATA.map((item, index) => {
+                const isOpen = openCase === index;
+                return (
+                  <React.Fragment key={`${item.caso}-${index}`}>
+                    <tr
+                      className={`cedforn-row ${isOpen ? "open" : ""}`}
+                      onClick={() => setOpenCase(isOpen ? null : index)}
+                    >
+                      <td>
+                        <CaretSvg open={isOpen} />
+                      </td>
+                      <td className="cedforn-fornecedor">{item.fornecedor}</td>
+                      <td className="cedforn-caso">CASE {item.caso}</td>
+                      <td className="cedforn-titulo">{item.titulo}</td>
+                      <td className="cedforn-equip">{item.equipamento}</td>
+                      <td>{statusBadge(item)}</td>
+                    </tr>
+
+                    {isOpen && (
+                      <tr className="cedforn-expand">
+                        <td colSpan="6">
+                          <div className="cedforn-expand-inner open">
+                            <div className="cedforn-expand-content">
+                              <p>{item.descricao}</p>
+                              <div className="cedforn-meta">
+                                <span>
+                                  <b>Fornecedor</b> {item.fornecedor}
+                                </span>
+                                <span>
+                                  <b>Caso</b> {item.caso}
+                                </span>
+                                <span>
+                                  <b>Equipamento</b> {item.equipamento}
+                                  {item.sn !== "-" ? ` · S/N ${item.sn}` : ""}
+                                </span>
+                                <span>
+                                  <b>Período</b> {item.periodo}
+                                </span>
+                                <span>
+                                  <b>Status</b> {item.statusLabel}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -353,6 +378,10 @@ function Home() {
           background: #1a2030;
         }
 
+        .cedforn-row.open td {
+          background: #1a2030;
+        }
+
         .cedforn-caret {
           display: inline-flex;
           align-items: center;
@@ -361,6 +390,11 @@ function Home() {
           height: 16px;
           color: var(--text-3);
           transition: transform 0.18s ease;
+        }
+
+        .cedforn-caret.open {
+          transform: rotate(90deg);
+          color: var(--text-1);
         }
 
         .cedforn-fornecedor {
@@ -408,6 +442,51 @@ function Home() {
           background: var(--blue-tag-bg);
         }
 
+        .cedforn-expand td {
+          padding: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .cedforn-expand-inner {
+          max-height: 320px;
+          overflow: hidden;
+        }
+
+        .cedforn-expand-content {
+          background: var(--bg-expand);
+          padding: 20px 28px 24px 58px;
+          border-left: 3px solid transparent;
+          border-image: var(--globo-grad) 1;
+        }
+
+        .cedforn-expand-content p {
+          font-size: 13.5px;
+          color: var(--text-2);
+          line-height: 1.6;
+          margin: 0 0 12px;
+          max-width: 820px;
+        }
+
+        .cedforn-meta {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+          font-size: 11.5px;
+          color: var(--text-3);
+          font-family: "JetBrains Mono", monospace;
+        }
+
+        .cedforn-meta span {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .cedforn-meta b {
+          color: var(--text-2);
+          font-weight: 500;
+        }
+
         @media (max-width: 860px) {
           .cedforn-header {
             padding: 18px 20px;
@@ -415,6 +494,10 @@ function Home() {
 
           .cedforn-legend {
             padding: 12px 20px;
+          }
+
+          .cedforn-expand-content {
+            padding: 16px 20px 20px 44px;
           }
         }
       `}</style>
