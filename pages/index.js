@@ -1,173 +1,78 @@
 import React from "react";
 import Head from "next/head";
 
-const INV_DATA = [
+const CASOS_DATA = [
   {
-    squad: "Parceria SP",
-    focal: "Leo Almeida",
-    site: "SP",
-    hostname: "SPPAAD-ACLIENT2",
-    ip: "10.193.48.204",
-    so: "Windows 7",
-    app: "CED",
-    tipo: "Cliente",
-    plan: [{ q: "Q3", state: "current" }],
-    status: "Em Andamento",
-    solCont: "Mitigado",
+    fornecedor: "Grass Valley",
+    caso: "00944912",
+    equipamento: "IQUCP25",
+    sn: "S58091262",
+    titulo: "Saída em preto (black) intermitente no gateway GW5",
+    status: "wait",
+    statusLabel: "Aguardando fornecedor",
+    periodo: "-",
+    descricao:
+      "O gateway identificado como GW5 apresenta falha intermitente de saída em preto (black) sempre que ocorre uma troca de sinal. Foi observado no monitor PWV RK56 e em outras saídas do mesmo gateway, sem relação com uma fonte ou destino específico. Já existe uma gravação em vídeo da falha, disponível para envio. Foi solicitado à Grass Valley um direcionamento sobre logs e diagnósticos necessários.",
   },
   {
-    squad: "Parceria SP",
-    focal: "Leo Almeida",
-    site: "SP",
-    hostname: "MIDIAS-CTRS-SP",
-    ip: "10.236.28.174",
-    so: "Windows 8",
-    app: "COT",
-    tipo: "Cliente",
-    plan: [{ q: "Q4", state: "current" }],
-    status: "Pendente",
-    solCont: "Mitigado",
+    fornecedor: "Grass Valley",
+    caso: "00943199",
+    equipamento: "Mesa Masterpiece",
+    sn: "-",
+    titulo: "Ruído de áudio no ar durante o programa BDSP",
+    status: "investig",
+    statusLabel: "Em investigação",
+    periodo: "-",
+    descricao:
+      "Durante a exibição ao vivo do programa BDSP, foi identificado um ruído de áudio no ar, com suspeita de origem na mesa de mixagem Masterpiece — equipamento que já havia apresentado ocorrências semelhantes anteriormente. O caso foi aberto para investigar a causa raiz e evitar repetição em futuras transmissões.",
   },
   {
-    squad: "Parceria SP",
-    focal: "Leo Almeida",
-    site: "SP",
-    hostname: "SRVSPPAMEM1IN03",
-    ip: "10.236.72.138",
-    so: "Windows 7",
-    app: "MAM INGEST",
-    tipo: "Cliente",
-    plan: [{ q: "Q4", state: "current" }],
-    status: "Pendente",
-    solCont: "Mitigado",
+    fornecedor: "Grass Valley",
+    caso: "00945495",
+    equipamento: "Mesa Masterpiece",
+    sn: "-",
+    titulo: "Perdas de sinal no ar — SPG e switch já descartados",
+    status: "investig",
+    statusLabel: "Em investigação",
+    periodo: "-",
+    descricao:
+      "Duas perdas de sinal no ar no mesmo dia (10h05m57s–10h06m16s, 19s; e 10h07m18s–10h07m40s, 22s), além de uma terceira ocorrência de 4s. Já foi verificado que o problema não está no SPG nem no switch Cisco. Foi solicitada a análise dos logs da mesa Masterpiece para identificar a origem das perdas.",
   },
   {
-    squad: "Centros Exibidores",
-    focal: "Helena Oliveira / Leo",
-    site: "SP",
-    hostname: "CLIENT-AIR-DR-1",
-    ip: "10.193.152.8",
-    so: "Windows 7",
-    app: "PEBBLE TVA",
-    tipo: "Cliente",
-    plan: [{ q: "Q4", state: "current" }],
-    status: "Pendente",
-    solCont: "Mitigado",
+    fornecedor: "Tektronix",
+    caso: "00946651",
+    equipamento: "SPG8000A",
+    sn: "-",
+    titulo: "Instabilidade SPG–SPINE-LEAF nas telas de multivisão",
+    status: "wait",
+    statusLabel: "Aguardando fornecedor",
+    periodo: "24–25/09",
+    descricao:
+      "Em 25/09 ocorreu sintoma semelhante ao de 24/09: todas as telas de multivisão oscilaram, com perda de referência e switchover entre os SPGs. Horas depois, o sintoma se repetiu — todo o sistema IP oscilou — mas sem registro de switchover nos logs dessa segunda ocorrência. O time de redes identificou um problema de conexão entre o SPG e o switch de rede (SPINE-LEAF), além de instabilidade na rede no momento das ocorrências.",
   },
   {
-    squad: "Centros Exibidores",
-    focal: "Helena Oliveira / Leo",
-    site: "SP",
-    hostname: "EXB-AB-CH18-1",
-    ip: "10.193.49.36",
-    so: "Windows 7",
-    app: "PEBBLE TVA",
-    tipo: "Cliente",
-    plan: [{ q: "Q3", state: "current" }],
-    status: "Em Andamento",
-    solCont: "Mitigado",
+    fornecedor: "Video Data",
+    caso: "#2305",
+    equipamento: "Pebble · Sistema C",
+    sn: "-",
+    titulo: "Falha recorrente no Sistema C do Pebble",
+    status: "wait",
+    statusLabel: "Aguardando fornecedor",
+    periodo: "Recorrente (últ. 31/08)",
+    descricao:
+      "O material executa normalmente nos Sistemas A/B, mas exibe a claquete no lugar do conteúdo ao rodar no Sistema C. Tudo indica falha na propagação dos metadados de A/B para o C. Exemplo registrado: material G1 \"P0321034\", em 31/08 às 16h17, com imagens e logs anexados. Caso está sob análise da Video Data.",
   },
   {
-    squad: "Centros Exibidores",
-    focal: "Helena Oliveira / Leo",
-    site: "SP",
-    hostname: "EXIB-AB-PROG",
-    ip: "10.193.49.44",
-    so: "Windows 7",
-    app: "PEBBLE TVA",
-    tipo: "Cliente",
-    plan: [{ q: "Q3", state: "current" }],
-    status: "Em Andamento",
-    solCont: "Pendente",
-  },
-  {
-    squad: "Centros Exibidores",
-    focal: "Helena Oliveira / Leo",
-    site: "SP",
-    hostname: "INGEST-AB-4",
-    ip: "10.193.49.51",
-    so: "Windows 7",
-    app: "PEBBLE TVA",
-    tipo: "Cliente",
-    plan: [{ q: "Q3", state: "current" }],
-    status: "Em Andamento",
-    solCont: "Pendente",
-  },
-  {
-    squad: "Centros Exibidores",
-    focal: "Helena Oliveira / Leo",
-    site: "SP",
-    hostname: "EXIB-AB-SAT-2",
-    ip: "10.193.49.35",
-    so: "Windows 7",
-    app: "PEBBLE TVA",
-    tipo: "Cliente",
-    plan: [{ q: "Q3", state: "current" }],
-    status: "Em Andamento",
-    solCont: "Mitigado",
-  },
-  {
-    squad: "Centros Exibidores",
-    focal: "Helena Oliveira / Leo",
-    site: "SP",
-    hostname: "EXIB-AB-COORD",
-    ip: "10.193.49.38",
-    so: "Windows 7",
-    app: "PEBBLE TVA",
-    tipo: "Cliente",
-    plan: [{ q: "Q3", state: "current" }],
-    status: "Em Andamento",
-    solCont: "Mitigado",
-  },
-  {
-    squad: "Parceria SP",
-    focal: "Leo Almeida / Victor",
-    site: "SP",
-    hostname: "SKYPE41",
-    ip: "10.236.29.5",
-    so: "Windows 7",
-    app: "SKYPE",
-    tipo: "Cliente",
-    plan: [
-      { q: "Q1", state: "past" },
-      { q: "Q2", state: "past" },
-      { q: "Q3", state: "current" },
-    ],
-    status: "Em Andamento",
-    solCont: "Pendente",
-  },
-  {
-    squad: "Parceria SP",
-    focal: "Leo Almeida / Victor",
-    site: "SP",
-    hostname: "SVR-SKYPE-M3GN",
-    ip: "10.236.29.13",
-    so: "Windows 7",
-    app: "SKYPE",
-    tipo: "Cliente",
-    plan: [
-      { q: "Q1", state: "past" },
-      { q: "Q2", state: "past" },
-      { q: "Q3", state: "current" },
-    ],
-    status: "Em Andamento",
-    solCont: "Pendente",
-  },
-  {
-    squad: "Parceria SP",
-    focal: "Leo Almeida",
-    site: "SP",
-    hostname: "WKS-SSTV04",
-    ip: "10.236.12.25",
-    so: "Windows 7",
-    app: "SUPORTE",
-    tipo: "Cliente",
-    plan: [
-      { q: "Q2", state: "past" },
-      { q: "Q3", state: "current" },
-    ],
-    status: "Em Andamento",
-    solCont: "Mitigado",
+    fornecedor: "Video Data",
+    caso: "#2310",
+    equipamento: "Servidores 1 e 2",
+    sn: "-",
+    titulo: "Travamento e failover dos servidores 1 e 2",
+    status: "wait",
+    statusLabel: "Aguardando fornecedor",
+    periodo: "10/09, 01h50",
+    descricao:
+      "Travamento momentâneo dos Servidores 1 e 2 seguido de failover em 10/09 por volta de 01h50. Os logs dos Masters A e B mostram, no mesmo intervalo, uma sequência de falhas de comunicação (timeouts, erro de conexão, desconexão, VITC inválido com fallback de sync), sugerindo instabilidade transitória de conectividade entre componentes de playout/redundância. Logs enviados via Dropbox e caso sob análise da Video Data.",
   },
 ];
 
@@ -175,21 +80,21 @@ function LogoSvg() {
   return (
     <svg viewBox="0 0 491 249" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Globo">
       <defs>
-        <linearGradient id="cedinvG1" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id="cedfornG1" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#6B2FF2" />
           <stop offset="100%" stopColor="#12A8E8" />
         </linearGradient>
       </defs>
-      <circle cx="124" cy="124" r="100" fill="url(#cedinvG1)" />
+      <circle cx="124" cy="124" r="100" fill="url(#cedfornG1)" />
       <rect x="70" y="100" width="108" height="48" fill="#0A0D13" rx="4" />
-      <circle cx="124" cy="124" r="24" fill="url(#cedinvG1)" />
+      <circle cx="124" cy="124" r="24" fill="url(#cedfornG1)" />
       <text
         x="205"
         y="150"
         fontFamily="Space Grotesk, sans-serif"
         fontWeight="700"
         fontSize="70"
-        fill="url(#cedinvG1)"
+        fill="url(#cedfornG1)"
       >
         globo
       </text>
@@ -199,7 +104,7 @@ function LogoSvg() {
 
 function CaretSvg() {
   return (
-    <svg className="cedinv-caret" viewBox="0 0 16 16" width="16" height="16" fill="none">
+    <svg className="cedforn-caret" viewBox="0 0 16 16" width="16" height="16" fill="none">
       <path
         d="M6 4l4 4-4 4"
         stroke="currentColor"
@@ -211,36 +116,17 @@ function CaretSvg() {
   );
 }
 
-function statusBadge(status) {
-  const cls = status === "Em Andamento" ? "status-andamento" : "status-pendente";
-  return <span className={`cedinv-badge ${cls}`}>{status}</span>;
-}
-
-function solBadge(sol) {
-  const cls = sol === "Mitigado" ? "sol-mitigado" : "sol-pendente";
-  return <span className={`cedinv-badge ${cls}`}>{sol}</span>;
-}
-
-function planChips(plan) {
-  return plan.map((item, index) => {
-    const sep = index > 0 ? <span key={`${item.q}-sep`} className="sep">›</span> : null;
-    const cls = item.state === "current" ? "q-current" : "q-past";
-    return (
-      <React.Fragment key={`${item.q}-${index}`}>
-        {sep}
-        <span className={cls}>{item.q}</span>
-      </React.Fragment>
-    );
-  });
+function statusBadge(item) {
+  return <span className={`cedforn-badge ${item.status}`}>{item.statusLabel}</span>;
 }
 
 function Home() {
   return (
     <>
       <Head>
-        <title>Inventário de Sistemas — Parceria SP</title>
+        <title>Casos Abertos com Fornecedores</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="Inventário de sistemas da parceria SP" />
+        <meta name="description" content="Painel de casos abertos com fornecedores" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -249,59 +135,53 @@ function Home() {
         />
       </Head>
 
-      <main className="cedinv-root">
-        <header className="cedinv-header">
-          <div className="cedinv-brand">
+      <main className="cedforn-root">
+        <header className="cedforn-header">
+          <div className="cedforn-brand">
             <LogoSvg />
-            <div className="cedinv-brand-text">
-              <div className="cedinv-top">CENTRAL DE ENGENHARIA</div>
-              <h1>Inventário de Sistemas — Parceria SP</h1>
+            <div className="cedforn-brand-text">
+              <div className="cedforn-top">CENTRAL DE ENGENHARIA</div>
+              <h1>Casos Abertos com Fornecedores</h1>
             </div>
           </div>
-          <div className="cedinv-count">{INV_DATA.length} hosts cadastrados</div>
+          <div className="cedforn-count">{CASOS_DATA.length} casos em aberto</div>
         </header>
 
-        <div className="cedinv-scroll">
-          <table className="cedinv-table">
+        <div className="cedforn-legend">
+          <span>
+            <i style={{ background: "var(--amber)" }} />
+            Aguardando retorno do fornecedor
+          </span>
+          <span>
+            <i style={{ background: "var(--blue-tag)" }} />
+            Em investigação interna
+          </span>
+        </div>
+
+        <div className="cedforn-scroll">
+          <table className="cedforn-table">
             <thead>
               <tr>
-                <th className="cedinv-caret-col"></th>
-                <th>Squad / Ponto Focal</th>
-                <th>Site</th>
-                <th>Hostname</th>
-                <th>IP</th>
-                <th>SO</th>
-                <th>Aplicação</th>
-                <th>Tipo</th>
-                <th>Plan.</th>
+                <th className="cedforn-caret-col"></th>
+                <th>Fornecedor</th>
+                <th>Caso</th>
+                <th>Título</th>
+                <th>Equipamento</th>
                 <th>Status</th>
-                <th>Sol. Cont.</th>
               </tr>
             </thead>
             <tbody>
-              {INV_DATA.map((item, index) => (
-                <React.Fragment key={`${item.hostname}-${index}`}>
-                  <tr className="cedinv-row">
+              {CASOS_DATA.map((item, index) => (
+                <React.Fragment key={`${item.caso}-${index}`}>
+                  <tr className="cedforn-row">
                     <td>
                       <CaretSvg />
                     </td>
-                    <td>
-                      <div className="cedinv-squad">{item.squad}</div>
-                      <div className="cedinv-focal">{item.focal}</div>
-                    </td>
-                    <td>{item.site}</td>
-                    <td className="cedinv-hostname">{item.hostname}</td>
-                    <td className="cedinv-ip">{item.ip}</td>
-                    <td>{item.so}</td>
-                    <td>{item.app}</td>
-                    <td>
-                      <span className="cedinv-badge tipo">{item.tipo}</span>
-                    </td>
-                    <td>
-                      <div className="cedinv-plan">{planChips(item.plan)}</div>
-                    </td>
-                    <td>{statusBadge(item.status)}</td>
-                    <td>{solBadge(item.solCont)}</td>
+                    <td className="cedforn-fornecedor">{item.fornecedor}</td>
+                    <td className="cedforn-caso">CASE {item.caso}</td>
+                    <td className="cedforn-titulo">{item.titulo}</td>
+                    <td className="cedforn-equip">{item.equipamento}</td>
+                    <td>{statusBadge(item)}</td>
                   </tr>
                 </React.Fragment>
               ))}
@@ -324,7 +204,7 @@ function Home() {
           box-sizing: border-box;
         }
 
-        .cedinv-root {
+        .cedforn-root {
           --bg-void: #0a0d13;
           --bg-panel: #11151e;
           --bg-row: #12161f;
@@ -340,9 +220,6 @@ function Home() {
           --blue-tag-bg: rgba(78, 168, 245, 0.12);
           --amber: #f2a93b;
           --amber-bg: rgba(242, 169, 59, 0.12);
-          --green: #3dd68c;
-          --green-bg: rgba(61, 214, 140, 0.12);
-          --grey-bg: rgba(140, 150, 170, 0.1);
           background: var(--bg-void);
           color: var(--text-1);
           font-family: "Space Grotesk", sans-serif;
@@ -354,7 +231,7 @@ function Home() {
           margin: 0 auto;
         }
 
-        .cedinv-header {
+        .cedforn-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -364,7 +241,7 @@ function Home() {
           position: relative;
         }
 
-        .cedinv-header::after {
+        .cedforn-header::after {
           content: "";
           position: absolute;
           left: 0;
@@ -374,48 +251,71 @@ function Home() {
           background: var(--globo-grad);
         }
 
-        .cedinv-brand {
+        .cedforn-brand {
           display: flex;
           align-items: center;
           gap: 14px;
         }
 
-        .cedinv-brand svg {
+        .cedforn-brand svg {
           height: 26px;
           width: auto;
           display: block;
         }
 
-        .cedinv-brand-text .cedinv-top {
+        .cedforn-brand-text .cedforn-top {
           font-size: 10.5px;
           letter-spacing: 0.08em;
           color: var(--text-3);
           font-family: "JetBrains Mono", monospace;
         }
 
-        .cedinv-brand-text h1 {
+        .cedforn-brand-text h1 {
           font-size: 17px;
           font-weight: 600;
           margin: 2px 0 0;
         }
 
-        .cedinv-count {
+        .cedforn-count {
           font-family: "JetBrains Mono", monospace;
           font-size: 12px;
           color: var(--text-2);
         }
 
-        .cedinv-scroll {
+        .cedforn-legend {
+          display: flex;
+          gap: 24px;
+          padding: 14px 28px;
+          border-bottom: 1px solid var(--line);
+          font-size: 12px;
+          color: var(--text-2);
+          flex-wrap: wrap;
+        }
+
+        .cedforn-legend span {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+        }
+
+        .cedforn-legend i {
+          width: 8px;
+          height: 8px;
+          border-radius: 2px;
+          display: inline-block;
+        }
+
+        .cedforn-scroll {
           overflow-x: auto;
         }
 
-        table.cedinv-table {
+        table.cedforn-table {
           width: 100%;
           border-collapse: collapse;
-          min-width: 1080px;
+          min-width: 880px;
         }
 
-        .cedinv-table thead th {
+        .cedforn-table thead th {
           text-align: left;
           font-family: "JetBrains Mono", monospace;
           font-size: 11px;
@@ -427,131 +327,94 @@ function Home() {
           white-space: nowrap;
         }
 
-        .cedinv-table th.cedinv-caret-col {
+        .cedforn-table th.cedforn-caret-col {
           width: 34px;
           padding-left: 20px;
         }
 
-        .cedinv-row td {
-          padding: 14px 16px;
+        .cedforn-row td {
+          padding: 16px;
           border-bottom: 1px solid var(--line-soft);
           font-size: 13px;
           vertical-align: middle;
-          white-space: nowrap;
         }
 
-        .cedinv-row:nth-child(4n + 1) td,
-        .cedinv-row:nth-child(4n + 2) td {
+        .cedforn-row:nth-child(4n + 1) td,
+        .cedforn-row:nth-child(4n + 2) td {
           background: var(--bg-row);
         }
 
-        .cedinv-row:nth-child(4n + 3) td,
-        .cedinv-row:nth-child(4n + 4) td {
+        .cedforn-row:nth-child(4n + 3) td,
+        .cedforn-row:nth-child(4n + 4) td {
           background: var(--bg-row-alt);
         }
 
-        .cedinv-row:hover td {
+        .cedforn-row:hover td {
           background: #1a2030;
         }
 
-        .cedinv-caret {
+        .cedforn-caret {
           display: inline-flex;
           align-items: center;
           justify-content: center;
           width: 16px;
           height: 16px;
           color: var(--text-3);
+          transition: transform 0.18s ease;
         }
 
-        .cedinv-squad {
+        .cedforn-fornecedor {
           font-weight: 600;
           font-size: 13.5px;
           color: var(--text-1);
         }
 
-        .cedinv-focal {
-          font-size: 11.5px;
-          color: var(--text-3);
-          margin-top: 2px;
-        }
-
-        .cedinv-hostname {
+        .cedforn-caso {
           font-family: "JetBrains Mono", monospace;
           color: var(--blue-tag);
           font-size: 12.5px;
         }
 
-        .cedinv-ip {
-          font-family: "JetBrains Mono", monospace;
-          color: var(--text-2);
-          font-size: 12.5px;
+        .cedforn-titulo {
+          font-size: 13px;
+          color: var(--text-1);
+          max-width: 320px;
+          white-space: normal;
+          line-height: 1.4;
         }
 
-        .cedinv-badge {
+        .cedforn-equip {
+          font-size: 12.5px;
+          color: var(--text-2);
+          white-space: nowrap;
+        }
+
+        .cedforn-badge {
           font-family: "JetBrains Mono", monospace;
           font-size: 11px;
-          padding: 3px 10px;
+          padding: 4px 10px;
           border-radius: 20px;
           white-space: nowrap;
           display: inline-block;
         }
 
-        .cedinv-badge.tipo {
-          color: var(--blue-tag);
-          background: var(--blue-tag-bg);
-        }
-
-        .cedinv-badge.status-andamento {
-          color: var(--blue-tag);
-          background: var(--blue-tag-bg);
-        }
-
-        .cedinv-badge.status-pendente {
-          color: var(--text-2);
-          background: var(--grey-bg);
-        }
-
-        .cedinv-badge.sol-mitigado {
-          color: var(--green);
-          background: var(--green-bg);
-        }
-
-        .cedinv-badge.sol-pendente {
+        .cedforn-badge.wait {
           color: var(--amber);
           background: var(--amber-bg);
         }
 
-        .cedinv-plan {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          font-family: "JetBrains Mono", monospace;
-          font-size: 11px;
-        }
-
-        .cedinv-plan .q-past {
-          color: var(--text-3);
-          text-decoration: line-through;
-        }
-
-        .cedinv-plan .q-current {
-          color: var(--amber);
-          background: var(--amber-bg);
-          padding: 2px 7px;
-          border-radius: 12px;
-          font-weight: 600;
-        }
-
-        .cedinv-plan .sep {
-          color: var(--text-3);
+        .cedforn-badge.investig {
+          color: var(--blue-tag);
+          background: var(--blue-tag-bg);
         }
 
         @media (max-width: 860px) {
-          .cedinv-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 14px;
+          .cedforn-header {
             padding: 18px 20px;
+          }
+
+          .cedforn-legend {
+            padding: 12px 20px;
           }
         }
       `}</style>
