@@ -76,25 +76,6 @@ const CASOS_DATA = [
   },
 ];
 
-function LogoSvg() {
-  return (
-    <svg viewBox="0 0 491 249" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Globo">
-      <defs>
-        <linearGradient id="cedfornG1" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#6B2FF2" />
-          <stop offset="100%" stopColor="#12A8E8" />
-        </linearGradient>
-      </defs>
-      <circle cx="124" cy="124" r="100" fill="url(#cedfornG1)" />
-      <rect x="70" y="100" width="108" height="48" fill="#0A0D13" rx="4" />
-      <circle cx="124" cy="124" r="24" fill="url(#cedfornG1)" />
-      <text x="205" y="150" fontFamily="Space Grotesk, sans-serif" fontWeight="700" fontSize="70" fill="url(#cedfornG1)">
-        globo
-      </text>
-    </svg>
-  );
-}
-
 function CaretSvg({ open }) {
   return (
     <svg className={`cedforn-caret ${open ? "open" : ""}`} viewBox="0 0 16 16" width="16" height="16" fill="none">
@@ -127,7 +108,6 @@ function Home() {
       <main className="cedforn-root">
         <header className="cedforn-header">
           <div className="cedforn-brand">
-            <LogoSvg />
             <div className="cedforn-brand-text">
               <div className="cedforn-top">CENTRAL DE ENGENHARIA</div>
               <h1>Casos Abertos com Fornecedores</h1>
@@ -280,12 +260,6 @@ function Home() {
           display: flex;
           align-items: center;
           gap: 14px;
-        }
-
-        .cedforn-brand svg {
-          height: 26px;
-          width: auto;
-          display: block;
         }
 
         .cedforn-brand-text .cedforn-top {
