@@ -1,10 +1,1 @@
-{
-  "compilerOptions": {
-    "module": "NodeNext",
-    "baseUrl": ".",
-    "types": ["vitest/globals"],
-    "paths": {
-      "@/*": ["interface/components/*"]
-    }
-  }
-}
+{ "compilerOptions": { "baseUrl": ".", "paths": { "@/*": ["./*"] } } }

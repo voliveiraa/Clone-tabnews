@@ -1,0 +1,9 @@
+[
+  { "slug": "video-digital", "name": "Vídeo digital", "description": "Bits, pixels, quadros, subamostragem e formatos." },
+  { "slug": "cor-e-hdr", "name": "Cor e HDR", "description": "Gamut, curvas de transferência, SDR, HDR e ACES." },
+  { "slug": "sinais-e-sdi", "name": "Sinais e SDI", "description": "SDI, conectores, taxas, embedded audio e dados auxiliares." },
+  { "slug": "sincronismo", "name": "Sincronismo", "description": "Genlock, tri-level, black burst, timecode e PTP." },
+  { "slug": "video-sobre-ip", "name": "Vídeo sobre IP", "description": "SMPTE ST 2110, NMOS, redes e PTP em produção." },
+  { "slug": "codecs-e-arquivos", "name": "Codecs e arquivos", "description": "Compressão, contêineres, MXF, ProRes, H.264 e HEVC." },
+  { "slug": "audio", "name": "Áudio", "description": "Níveis, loudness, canais, AES3, MADI e Dante." }
+]
