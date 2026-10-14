@@ -6,13 +6,13 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   const { topic } = await params;
-  const t = getTopics().find((x) => x.slug === topic);
+  const t = (await getTopics()).find((x) => x.slug === topic);
   return t ? { title: t.name, description: t.description } : {};
 }
 
 export default async function TopicPage({ params }) {
   const { topic } = await params;
-  const t = getTopics().find((x) => x.slug === topic);
+  const t = (await getTopics()).find((x) => x.slug === topic);
   if (!t) notFound();
   return (
     <>

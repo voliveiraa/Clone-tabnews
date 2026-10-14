@@ -11,7 +11,8 @@ export default async function Editor({ searchParams }) {
   if (!(await isAdmin())) redirect("/admin");
   const sp = await searchParams;
   const id = Number(sp.id) || 0;
-  let v = { title: "", topic: getTopics()[0].slug, date: new Date().toISOString().slice(0, 10), summary: "", body: "", draft: false };
+  const topics = await getTopics();
+  let v = { title: "", topic: topics[0]?.slug || "", date: new Date().toISOString().slice(0, 10), summary: "", body: "", draft: false };
   if (id) {
     const p = await getPostById(id);
     if (!p) redirect("/admin");
@@ -28,7 +29,7 @@ export default async function Editor({ searchParams }) {
         <div className="row">
           <label>Tópico
             <select name="topic" defaultValue={v.topic}>
-              {getTopics().map((t) => <option key={t.slug} value={t.slug}>{t.name}</option>)}
+              {topics.map((t) => <option key={t.slug} value={t.slug}>{t.name}</option>)}
             </select>
           </label>
           <label>Data<input type="date" name="date" defaultValue={v.date} required /></label>

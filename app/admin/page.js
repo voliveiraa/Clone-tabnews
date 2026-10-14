@@ -40,7 +40,7 @@ export default async function Admin({ searchParams }) {
       </div>
       {sp.ok && <p className="ok">Publicação {sp.ok === "salvo" ? "salva" : "excluída"}. Já está no ar.</p>}
       {error && <p className="err">{error}</p>}
-      <p><Link className="btn" href="/admin/editor">+ Nova publicação</Link></p>
+      <p><Link className="btn" href="/admin/editor">+ Nova publicação</Link> <Link href="/admin/topicos" style={{ marginLeft: 12 }}>Gerenciar tópicos</Link></p>
       <ol className="list">
         {rows.map((r, i) => (
           <li key={r.id}>

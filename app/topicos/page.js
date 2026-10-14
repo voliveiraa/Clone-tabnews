@@ -11,7 +11,7 @@ export default async function Topicos() {
       <h1>Tópicos</h1>
       <p className="lead">Escolha um assunto para ver as publicações.</p>
       <ul className="topics">
-        {getTopics().map((t) => (
+        {(await getTopics()).map((t) => (
           <li key={t.slug}>
             <Link href={`/topicos/${t.slug}`}>
               <span className="count">{posts.filter((p) => p.topic.slug === t.slug).length}</span>

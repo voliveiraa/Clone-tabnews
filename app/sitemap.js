@@ -8,7 +8,7 @@ export default async function sitemap() {
   const u = (p, d) => ({ url: SITE.url + p, ...(d ? { lastModified: d } : {}) });
   return [
     u("/"), u("/topicos"), u("/sobre"),
-    ...getTopics().map((t) => u(`/topicos/${t.slug}`)),
+    ...(await getTopics()).map((t) => u(`/topicos/${t.slug}`)),
     ...posts.map((p) => u(postPath(p), p.date)),
   ];
 }
