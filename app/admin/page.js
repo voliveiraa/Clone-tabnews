@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { adminConfigured, getSession } from "@/lib/auth";
-import { getAllPosts, formatDate } from "@/lib/posts";
+import { getAllPosts, formatDate, postPath } from "@/lib/posts";
+import { getAdminProfile } from "@/lib/profiles";
 import { countPendingUsers } from "@/lib/users";
 import { login } from "./actions";
 import DeleteButton from "./DeleteButton";
@@ -39,15 +40,20 @@ export default async function Admin({ searchParams }) {
       </>
     );
 
-  let rows = [], pending = 0, error = sp.erro && !LOGIN_ERRORS[sp.erro] ? sp.erro : null;
+  // Todos veem todos os posts publicados; rascunhos só o próprio autor (e o admin).
+  // Editar e excluir: o admin em tudo, o autor só nos dele.
+  let rows = [], pending = 0, adminName = "Admin", error = sp.erro && !LOGIN_ERRORS[sp.erro] ? sp.erro : null;
   try {
-    rows = await getAllPosts({ includeDrafts: true, authorId: session.admin ? undefined : session.id });
+    rows = (await getAllPosts({ includeDrafts: true }))
+      .filter((r) => session.admin || !r.draft || r.authorId === session.id);
+    adminName = (await getAdminProfile()).name;
     if (session.admin) pending = await countPendingUsers();
   } catch (e) { error = e.message; }
+  const mine = (r) => session.admin || r.authorId === session.id;
 
   return (
     <>
-      <h1>{session.admin ? "Admin" : "Minhas publicações"}</h1>
+      <h1>{session.admin ? "Admin" : "Painel do autor"}</h1>
       {sp.ok && <p className="ok">Publicação {sp.ok === "salvo" ? "salva" : "excluída"}.</p>}
       {error && <p className="err">{error}</p>}
       <p className="adminbar">
@@ -61,12 +67,14 @@ export default async function Admin({ searchParams }) {
           <li key={r.id}>
             <span className="n">{i + 1}.</span>
             <div>
-              <Link href={`/admin/editor?id=${r.id}`} className="t">{r.title}</Link>
+              <Link href={mine(r) ? `/admin/editor?id=${r.id}` : postPath(r)} className="t">{r.title}</Link>
               <span className="meta">
                 {formatDate(r.date)}{r.draft ? " · rascunho" : ""} · {r.topic.name}
-                {session.admin && ` · ${r.author || "Admin"}`}
-                {" · "}<Link href={`/admin/editor?id=${r.id}`}>Editar</Link>
-                {" · "}<DeleteButton id={r.id} title={r.title} className="link danger-link" />
+                {" · "}{r.authorId && r.authorId === session.id ? "você" : r.author || adminName}
+                {mine(r)
+                  ? <>{" · "}<Link href={`/admin/editor?id=${r.id}`}>Editar</Link>
+                      {" · "}<DeleteButton id={r.id} title={r.title} className="link danger-link" /></>
+                  : <>{" · "}<Link href={postPath(r)}>Ver</Link></>}
               </span>
             </div>
           </li>
