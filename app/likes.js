@@ -1,4 +1,5 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { addLike } from "@/lib/posts";
 
@@ -21,5 +22,6 @@ export async function toggleLike(id) {
   (await cookies()).set(COOKIE, next.join("."), {
     httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: MAX_AGE,
   });
+  revalidatePath("/", "layout"); // atualiza "Mais curtidos" na lateral
   return { liked: !was, total };
 }

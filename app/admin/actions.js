@@ -1,8 +1,13 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { adminConfigured, endSession, getSession, isAdmin, passwordOk, startSession } from "@/lib/auth";
 import { createTopic, deletePost, deleteTopic, getPostById, getTopics, savePost, updateTopic } from "@/lib/posts";
 import { createUser, deleteUser, getUserByUsername, setUserStatus, verifyPassword } from "@/lib/users";
+
+// As laterais e o topo ficam no layout, que o navegador guarda entre páginas:
+// depois de qualquer alteração, manda recarregar (contagens, mais curtidos, Entrar/Sair).
+const refreshLayout = () => revalidatePath("/", "layout");
 
 const slow = () => new Promise((r) => setTimeout(r, 1200)); // freia tentativas em sequência
 
@@ -14,6 +19,7 @@ export async function login(formData) {
   if (username === "admin") {
     if (!passwordOk(senha)) { await slow(); redirect("/admin?erro=1"); }
     await startSession("admin");
+    refreshLayout();
     redirect("/admin");
   }
   const u = username ? await getUserByUsername(username) : null;
@@ -21,11 +27,13 @@ export async function login(formData) {
   if (u.status === "pending") redirect("/admin?erro=pendente");
   if (u.status !== "approved") redirect("/admin?erro=bloqueado");
   await startSession(`u${u.id}`);
+  refreshLayout();
   redirect("/admin");
 }
 
 export async function logout() {
   await endSession();
+  refreshLayout();
   redirect("/admin");
 }
 
@@ -72,6 +80,7 @@ export async function save(formData) {
   } catch (e) {
     redirect(`/admin?erro=${encodeURIComponent("Falha ao salvar: " + e.message)}`);
   }
+  refreshLayout();
   redirect("/admin?ok=salvo");
 }
 
@@ -85,6 +94,7 @@ export async function remove(formData) {
   } catch (e) {
     redirect(`/admin?erro=${encodeURIComponent("Falha ao excluir: " + e.message)}`);
   }
+  refreshLayout();
   redirect("/admin?ok=excluido");
 }
 
@@ -98,6 +108,7 @@ export async function addTopic(formData) {
   } catch (e) {
     redirect("/admin/topicos?erro=" + encodeURIComponent(e.message));
   }
+  refreshLayout();
   redirect("/admin/topicos?ok=criado");
 }
 
@@ -112,6 +123,7 @@ export async function editTopic(formData) {
   } catch (e) {
     redirect("/admin/topicos?erro=" + encodeURIComponent(e.message));
   }
+  refreshLayout();
   redirect("/admin/topicos?ok=salvo");
 }
 
@@ -122,6 +134,7 @@ export async function removeTopic(formData) {
   } catch (e) {
     redirect("/admin/topicos?erro=" + encodeURIComponent(e.message));
   }
+  refreshLayout();
   redirect("/admin/topicos?ok=excluido");
 }
 
@@ -132,6 +145,7 @@ export async function changeUserStatus(formData) {
   } catch (e) {
     redirect("/admin/autores?erro=" + encodeURIComponent(e.message));
   }
+  refreshLayout();
   redirect("/admin/autores?ok=salvo");
 }
 
@@ -142,5 +156,6 @@ export async function removeUser(formData) {
   } catch (e) {
     redirect("/admin/autores?erro=" + encodeURIComponent(e.message));
   }
+  refreshLayout();
   redirect("/admin/autores?ok=excluido");
 }
