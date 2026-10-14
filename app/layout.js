@@ -2,6 +2,7 @@ import "./globals.css";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { getSession } from "@/lib/auth";
+import { countPostsByTopic, getMostLiked, getTopics, postPath } from "@/lib/posts";
 import { logout } from "./admin/actions";
 
 export const metadata = {
@@ -13,12 +14,17 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const session = await getSession().catch(() => null);
+  const [session, topics, counts, liked] = await Promise.all([
+    getSession().catch(() => null),
+    getTopics().catch(() => []),
+    countPostsByTopic({ publishedOnly: true }).catch(() => ({})),
+    getMostLiked(5).catch(() => []),
+  ]);
   return (
     <html lang="pt-BR">
       <body>
         <header className="top">
-          <div className="wrap">
+          <div className="wrap wide">
             <Link href="/" className="brand">Media<span>Lake</span></Link>
             <nav>
               <Link href="/">Publicações</Link>
@@ -36,13 +42,55 @@ export default async function RootLayout({ children }) {
             </div>
           </div>
         </header>
-        <main><div className="wrap">{children}</div></main>
+        <main className="wide layout">
+          <aside className="side left">
+            <h2>Tópicos</h2>
+            <ul className="sidelist">
+              {topics.map((t) => (
+                <li key={t.slug}>
+                  <Link href={`/topicos/${t.slug}`}>{t.name}</Link>
+                  {counts[t.slug] > 0 && <span className="count">{counts[t.slug]}</span>}
+                </li>
+              ))}
+            </ul>
+          </aside>
+          <div className="content">{children}</div>
+          <aside className="side right">
+            <section className="card">
+              <h2>Sobre o {SITE.name}</h2>
+              <p>{SITE.description}</p>
+              <Link href="/sobre">Saiba mais →</Link>
+            </section>
+            {liked.length > 0 && (
+              <section className="card">
+                <h2>Mais curtidos</h2>
+                <ol className="sidelist ranked">
+                  {liked.map((p) => (
+                    <li key={p.id}><Link href={postPath(p)}>{p.title}</Link><span className="count">👍 {p.likes}</span></li>
+                  ))}
+                </ol>
+              </section>
+            )}
+            {!session && (
+              <section className="card">
+                <h2>Quer escrever?</h2>
+                <p>Crie sua conta de autor e publique depois da aprovação.</p>
+                <Link href="/cadastro">Criar conta →</Link>
+              </section>
+            )}
+            <section className="card">
+              <a href="/rss.xml">Assinar o RSS</a>
+            </section>
+          </aside>
+        </main>
         <footer className="bottom">
-          <div className="wrap">
-            <span>© {new Date().getFullYear()} {SITE.name}</span>
-            <Link href="/topicos">Tópicos</Link>
-            <Link href="/sobre">Sobre</Link>
-            <a href="/rss.xml">RSS</a>
+          <div className="wrap wide">
+            <span>© {new Date().getFullYear()} {SITE.name} · {SITE.description}</span>
+            <span className="links">
+              <Link href="/topicos">Tópicos</Link>
+              <Link href="/sobre">Sobre</Link>
+              <a href="/rss.xml">RSS</a>
+            </span>
           </div>
         </footer>
       </body>
