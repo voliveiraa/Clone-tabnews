@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getSession } from "@/lib/auth";
 import { register } from "../admin/actions";
 import AvatarBuilder from "../AvatarBuilder";
 
@@ -7,6 +8,7 @@ export const metadata = { title: "Criar conta de autor", robots: { index: false,
 
 export default async function Cadastro({ searchParams }) {
   const sp = await searchParams;
+  const session = await getSession().catch(() => null);
   if (sp.ok)
     return (
       <>
@@ -18,6 +20,7 @@ export default async function Cadastro({ searchParams }) {
   return (
     <>
       <h1>Criar conta de autor</h1>
+      {session && <p className="err">Você está conectado como {session.name}. Ao criar uma conta nova, você sai dessa conta.</p>}
       <p className="lead">Autores aprovados podem publicar no MediaLake. Depois do cadastro, o admin precisa aprovar sua conta.</p>
       <form action={register} className="form">
         <div style={{ display: "grid", gap: 14, maxWidth: 400 }}>

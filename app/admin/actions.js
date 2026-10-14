@@ -17,6 +17,9 @@ export async function login(formData) {
   if (!adminConfigured()) redirect("/admin");
   const username = String(formData.get("usuario") || "").trim().toLowerCase();
   const senha = String(formData.get("senha") || "");
+  // Qualquer tentativa de login desconecta a conta anterior (mesmo se a nova falhar).
+  await endSession();
+  refreshLayout();
   if (username === "admin") {
     if (!passwordOk(senha)) { await slow(); redirect("/admin?erro=1"); }
     await startSession("admin");
@@ -50,6 +53,9 @@ export async function register(formData) {
   } catch (e) {
     redirect("/cadastro?erro=" + encodeURIComponent(e.message));
   }
+  // Conta nova criada: desconecta quem estava logado neste navegador.
+  await endSession();
+  refreshLayout();
   redirect("/cadastro?ok=1");
 }
 
