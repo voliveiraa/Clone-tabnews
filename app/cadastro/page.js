@@ -20,8 +20,7 @@ export default async function Cadastro({ searchParams }) {
       <p className="lead">Autores aprovados podem publicar no MediaLake. Depois do cadastro, o admin precisa aprovar sua conta.</p>
       <form action={register} className="form" style={{ maxWidth: 400 }}>
         <label>Seu nome (aparece nos posts)<input name="name" required maxLength={80} autoComplete="name" /></label>
-        <label>Usuário (para entrar)<input name="usuario" required pattern="[a-z0-9_.\-]{3,30}" autoCapitalize="none"
-          title="3 a 30 letras minúsculas, números, ponto, hífen ou _" autoComplete="username" /></label>
+        <label>Usuário (para entrar)<input name="usuario" required maxLength={30} autoCapitalize="none" autoComplete="username" /></label>
         <label>Senha (mínimo 8 caracteres)<input type="password" name="senha" required minLength={8} autoComplete="new-password" /></label>
         <label>Repita a senha<input type="password" name="senha2" required minLength={8} autoComplete="new-password" /></label>
         {sp.erro && <p className="err">{sp.erro}</p>}
