@@ -2,7 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/auth";
 import { getPostById, getTopics } from "@/lib/posts";
-import { remove, save } from "../actions";
+import { save } from "../actions";
+import DeleteButton from "../DeleteButton";
 
 export const dynamic = "force-dynamic";
 
@@ -38,10 +39,7 @@ export default async function Editor({ searchParams }) {
         <button type="submit">Salvar e publicar</button>
       </form>
       {id > 0 && (
-        <form action={remove} style={{ marginTop: 28 }}>
-          <input type="hidden" name="id" value={id} />
-          <button type="submit" className="danger">Excluir esta publicação</button>
-        </form>
+        <p style={{ marginTop: 28 }}><DeleteButton id={id} title={v.title}>Excluir esta publicação</DeleteButton></p>
       )}
     </>
   );

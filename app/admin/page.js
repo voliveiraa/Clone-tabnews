@@ -2,6 +2,7 @@ import Link from "next/link";
 import { adminConfigured, isAdmin } from "@/lib/auth";
 import { getAllPosts, formatDate } from "@/lib/posts";
 import { login, logout } from "./actions";
+import DeleteButton from "./DeleteButton";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +47,11 @@ export default async function Admin({ searchParams }) {
             <span className="n">{i + 1}.</span>
             <div>
               <Link href={`/admin/editor?id=${r.id}`} className="t">{r.title}</Link>
-              <span className="meta">{formatDate(r.date)}{r.draft ? " · rascunho" : ""} · {r.topic.name}</span>
+              <span className="meta">
+                {formatDate(r.date)}{r.draft ? " · rascunho" : ""} · {r.topic.name}
+                {" · "}<Link href={`/admin/editor?id=${r.id}`}>Editar</Link>
+                {" · "}<DeleteButton id={r.id} title={r.title} className="link danger-link" />
+              </span>
             </div>
           </li>
         ))}

@@ -63,5 +63,6 @@ button, .btn { font: inherit; cursor: pointer; border: 1px solid var(--accent); 
 .btn:hover { text-decoration: none; opacity: .9; }
 button.link { background: none; border: 0; color: var(--accent); padding: 0; }
 button.danger { background: none; color: #d1242f; border-color: #d1242f; }
+button.link.danger-link { color: #d1242f; font-size: inherit; }
 .err { color: #d1242f; } .ok { color: #1a7f37; }
 @media (max-width: 520px) { .form .row { grid-template-columns: 1fr; } }
