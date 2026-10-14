@@ -3,7 +3,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { adminConfigured, endSession, getSession, isAdmin, passwordOk, startSession } from "@/lib/auth";
 import { createTopic, deletePost, deleteTopic, getPostById, getTopics, savePost, updateTopic } from "@/lib/posts";
-import { createUser, deleteUser, getUserByUsername, setUserStatus, verifyPassword } from "@/lib/users";
+import { saveAdminProfile } from "@/lib/profiles";
+import { createUser, deleteUser, getUserByUsername, setUserStatus, updateUserProfile, verifyPassword } from "@/lib/users";
 
 // As laterais e o topo ficam no layout, que o navegador guarda entre páginas:
 // depois de qualquer alteração, manda recarregar (contagens, mais curtidos, Entrar/Sair).
@@ -45,11 +46,30 @@ export async function register(formData) {
   if (senha !== String(formData.get("senha2") || "")) redirect("/cadastro?erro=" + encodeURIComponent("As senhas não conferem."));
   await slow();
   try {
-    await createUser({ username, name, password: senha });
+    await createUser({ username, name, password: senha, avatar: parseAvatar(formData), title: String(formData.get("title") || "") });
   } catch (e) {
     redirect("/cadastro?erro=" + encodeURIComponent(e.message));
   }
   redirect("/cadastro?ok=1");
+}
+
+const parseAvatar = (formData) => {
+  try { return JSON.parse(String(formData.get("avatar") || "{}")); } catch { return {}; }
+};
+
+// "Meu perfil": nome, avatar e cargo (do admin ou do autor logado).
+export async function saveProfile(formData) {
+  const session = await getSession();
+  if (!session) redirect("/admin");
+  const data = { name: String(formData.get("name") || ""), avatar: parseAvatar(formData), title: String(formData.get("title") || "") };
+  try {
+    if (session.admin) await saveAdminProfile(data);
+    else await updateUserProfile(session.id, data);
+  } catch (e) {
+    redirect("/admin/perfil?erro=" + encodeURIComponent(e.message));
+  }
+  refreshLayout();
+  redirect("/admin/perfil?ok=1");
 }
 
 // Autor só mexe nos próprios posts; o admin mexe em todos.

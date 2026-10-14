@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatDate, getPost, postPath } from "@/lib/posts";
+import { getAuthorProfile } from "@/lib/profiles";
+import AuthorCard from "../../AuthorCard";
+import RailSlot from "../../RailSlot";
 import LikeButton from "../../LikeButton";
 import { likedIds } from "../../likes";
 
@@ -22,12 +25,14 @@ export default async function PostPage({ params }) {
   const { topic, slug } = await params;
   const p = await getPost(topic, slug);
   if (!p) notFound();
+  const author = await getAuthorProfile(p.authorId).catch(() => null);
   return (
     <>
+      {author && <RailSlot><AuthorCard author={author} /></RailSlot>}
       <h1>{p.title}</h1>
       <p className="meta postmeta">
         <Link href={`/topicos/${p.topic.slug}`}>{p.topic.name}</Link> · {formatDate(p.date)} · {p.minutes} min de leitura
-        {p.author && <> · por {p.author}</>}
+        {author && <> · por {author.name}</>}
       </p>
       <article dangerouslySetInnerHTML={{ __html: p.html }} />
       <div className="likebar">

@@ -3,7 +3,9 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { getSession } from "@/lib/auth";
 import { countPostsByTopic, getMostLiked, getTopics, postPath } from "@/lib/posts";
+import { getWeeklyRanking } from "@/lib/profiles";
 import { logout } from "./admin/actions";
+import Podium from "./Podium";
 
 export const metadata = {
   metadataBase: new URL(SITE.url),
@@ -14,11 +16,12 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const [session, topics, counts, liked] = await Promise.all([
+  const [session, topics, counts, liked, ranking] = await Promise.all([
     getSession().catch(() => null),
     getTopics().catch(() => []),
     countPostsByTopic({ publishedOnly: true }).catch(() => ({})),
     getMostLiked(5).catch(() => []),
+    getWeeklyRanking(3).catch(() => []),
   ]);
   return (
     <html lang="pt-BR">
@@ -55,6 +58,8 @@ export default async function RootLayout({ children }) {
           </aside>
           <div className="content">{children}</div>
           <aside className="side right">
+            <div id="rail-slot" />
+            <Podium ranking={ranking} />
             {liked.length > 0 && (
               <section className="card">
                 <h2>Mais curtidos</h2>

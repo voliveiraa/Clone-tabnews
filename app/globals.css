@@ -113,3 +113,35 @@ header.top .account button.link { color: var(--muted); font-size: 14px; }
 button.secondary { background: none; color: var(--fg); border-color: var(--line); }
 button.secondary:hover { border-color: var(--accent); }
 @media (max-width: 520px) { header.top .wrap { gap: 12px; } nav { gap: 10px; font-size: 13px; } header.top .account { gap: 10px; font-size: 13px; } }
+/* Avatares em pixel art */
+.pixel-avatar { display: block; image-rendering: pixelated; flex: none; }
+.av-builder { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 28px; align-items: start; }
+.av-preview { position: sticky; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: #e2ddcb; }
+.av-preview .av-name { color: #3b2414; font-weight: 700; margin-top: 8px; }
+.av-preview .av-title { color: #6b5a48; font-size: 13px; }
+.av-controls { display: grid; gap: 12px; }
+.av-row { display: grid; gap: 6px; }
+.av-label { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.av-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+button.chip { background: none; color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 14px; }
+button.chip.on { border-color: var(--accent); color: var(--accent); background: var(--soft); }
+button.swatch { width: 26px; height: 26px; padding: 0; border-radius: 6px; border: 2px solid var(--line); }
+button.swatch.on { border-color: var(--fg); box-shadow: 0 0 0 2px var(--accent); }
+.av-chips input[type=color] { width: 30px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; }
+.av-row select { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; max-width: 260px; }
+@media (max-width: 700px) { .av-builder { grid-template-columns: 1fr; } .av-preview { position: static; } }
+/* Cartão do autor e pódio */
+.author-row { display: flex; gap: 12px; align-items: center; }
+.author-row .pixel-avatar { background: #e2ddcb; border-radius: 8px; padding: 4px 6px; box-sizing: content-box; }
+.author-row strong { display: block; }
+.author-title { display: block; color: var(--accent); font-size: 13px; }
+.podium { display: flex; justify-content: center; align-items: flex-end; gap: 6px; margin: 4px 0 12px; }
+.podium .step { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 33%; min-width: 0; }
+.podium .who { font-size: 12px; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.podium .pts { font-size: 11px; color: var(--muted); }
+.podium .block { width: 100%; display: flex; justify-content: center; align-items: flex-start; padding-top: 4px;
+  border: 1px solid var(--line); border-bottom: 0; border-radius: 6px 6px 0 0; background: var(--bg); font-size: 18px; }
+.podium .step-1 .block { height: 54px; border-color: #d4a72c; }
+.podium .step-2 .block { height: 38px; }
+.podium .step-3 .block { height: 28px; }

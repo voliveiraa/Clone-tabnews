@@ -52,6 +52,7 @@ export default async function Admin({ searchParams }) {
       {error && <p className="err">{error}</p>}
       <p className="adminbar">
         <Link className="btn" href="/admin/editor">+ Nova publicação</Link>
+        <Link href="/admin/perfil">Meu perfil</Link>
         {session.admin && <Link href="/admin/topicos">Gerenciar tópicos</Link>}
         {session.admin && <Link href="/admin/autores">Autores{pending > 0 && <span className="badge">{pending}</span>}</Link>}
       </p>
