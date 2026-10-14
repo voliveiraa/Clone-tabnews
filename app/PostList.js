@@ -12,6 +12,7 @@ export default function PostList({ posts, start = 1 }) {
             <Link href={postPath(p)} className="t">{p.title}</Link>
             <span className="meta">
               <Link href={`/topicos/${p.topic.slug}`}>{p.topic.name}</Link> · {formatDate(p.date)} · {p.minutes} min de leitura
+              {p.likes > 0 && <> · 👍 {p.likes}</>}
             </span>
           </div>
         </li>

@@ -50,6 +50,12 @@ article th, article td { border: 1px solid var(--line); padding: 6px 10px; text-
 article th { background: var(--soft); }
 article blockquote { margin: 1em 0; padding: 0 1em; border-left: 3px solid var(--line); color: var(--muted); }
 .postmeta { margin-bottom: 24px; }
+.likebar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--line); }
+button.like { background: none; color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; }
+button.like:hover { border-color: var(--accent); }
+button.like.on { border-color: var(--accent); background: var(--soft); color: var(--accent); }
+button.like:disabled { opacity: .6; cursor: wait; }
 footer.bottom { border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; padding: 20px 0 32px; }
 footer.bottom .wrap { display: flex; flex-wrap: wrap; gap: 6px 18px; }
 @media (max-width: 520px) { ol.list .n { min-width: 1.8em; } h1 { font-size: 1.4rem; } }

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatDate, getPost, postPath } from "@/lib/posts";
+import LikeButton from "../../LikeButton";
+import { likedIds } from "../../likes";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +29,10 @@ export default async function PostPage({ params }) {
         <Link href={`/topicos/${p.topic.slug}`}>{p.topic.name}</Link> · {formatDate(p.date)} · {p.minutes} min de leitura
       </p>
       <article dangerouslySetInnerHTML={{ __html: p.html }} />
+      <div className="likebar">
+        <span className="meta">Gostou? Deixe sua curtida.</span>
+        <LikeButton id={p.id} initialTotal={p.likes} initialLiked={(await likedIds()).includes(p.id)} />
+      </div>
     </>
   );
 }
