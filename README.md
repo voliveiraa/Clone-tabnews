@@ -16,7 +16,7 @@ Tópicos e autores são gerenciados só pelo admin.
    |---|---|
    | `DATABASE_URL` | string de conexão do Postgres |
    | `ADMIN_PASSWORD` | a senha do /admin (use uma senha longa e só sua) |
-   | `BLOB_READ_WRITE_TOKEN` | criada ao conectar um **Vercel Blob** (Storage → Blob) ao projeto; ativa o envio de fotos |
+   | `BLOB_STORE_ID` (ou `BLOB_READ_WRITE_TOKEN`) | criada ao conectar um **Vercel Blob** (Storage → Blob) ao projeto; ativa o envio de fotos |
 
    As integrações podem criar as variáveis com prefixo (ex.: `storage_DATABASE_URL`); o site aceita os dois nomes.
 
