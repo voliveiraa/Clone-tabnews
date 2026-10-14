@@ -60,7 +60,7 @@ export default async function Admin({ searchParams }) {
         <Link className="btn" href="/admin/editor">+ Nova publicação</Link>
         <Link href="/admin/perfil">Meu perfil</Link>
         {session.admin && <Link href="/admin/topicos">Gerenciar tópicos</Link>}
-        {session.admin && <Link href="/admin/autores">Autores{pending > 0 && <span className="badge">{pending}</span>}</Link>}
+        {session.admin && <Link href="/admin/contas">Contas{pending > 0 && <span className="badge">{pending}</span>}</Link>}
       </p>
       <ol className="list">
         {rows.map((r, i) => (

@@ -2,13 +2,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/auth";
 import { listUsers } from "@/lib/users";
-import { changeUserStatus, removeUser } from "../actions";
-import DeleteButton from "../DeleteButton";
+import { changeUserStatus } from "../actions";
+import DeleteAccount from "./DeleteAccount";
 
 export const dynamic = "force-dynamic";
 
 const STATUS = { pending: "aguardando aprovação", approved: "aprovado", blocked: "bloqueado" };
-const OK = { salvo: "Autor atualizado.", excluido: "Autor excluído." };
+const OK = { salvo: "Conta atualizada.", excluido: "Conta excluída." };
 
 function StatusButton({ id, status, children }) {
   return (
@@ -20,15 +20,16 @@ function StatusButton({ id, status, children }) {
   );
 }
 
-export default async function Autores({ searchParams }) {
+export default async function Contas({ searchParams }) {
   if (!(await isAdmin())) redirect("/admin");
   const sp = await searchParams;
   const users = await listUsers();
   return (
     <>
       <p className="meta"><Link href="/admin">← Voltar</Link></p>
-      <h1>Autores</h1>
-      <p className="lead">Quem se cadastra em <Link href="/cadastro">/cadastro</Link> só consegue publicar depois de aprovado aqui.</p>
+      <h1>Contas</h1>
+      <p className="lead">Só o admin vê esta página. Quem se cadastra em <Link href="/cadastro">/cadastro</Link> só publica depois de aprovado aqui.
+        Bloquear tira o acesso na hora; excluir apaga a conta.</p>
       {sp.ok && <p className="ok">{OK[sp.ok]}</p>}
       {sp.erro && <p className="err">{sp.erro}</p>}
       <ol className="list">
@@ -42,7 +43,7 @@ export default async function Autores({ searchParams }) {
                 {" · "}desde {u.created.split("-").reverse().join("/")} · {u.posts} publicação(ões)
                 {u.status !== "approved" && <>{" · "}<StatusButton id={u.id} status="approved">Aprovar</StatusButton></>}
                 {u.status !== "blocked" && <>{" · "}<StatusButton id={u.id} status="blocked">Bloquear</StatusButton></>}
-                {" · "}<DeleteButton id={u.id} action={removeUser} title={`${u.name} (@${u.username})`} className="link danger-link" />
+                {" · "}<DeleteAccount id={u.id} name={`${u.name} (@${u.username})`} posts={u.posts} />
               </span>
             </div>
           </li>

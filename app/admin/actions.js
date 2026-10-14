@@ -163,19 +163,19 @@ export async function changeUserStatus(formData) {
   try {
     await setUserStatus(formData.get("id"), String(formData.get("status") || ""));
   } catch (e) {
-    redirect("/admin/autores?erro=" + encodeURIComponent(e.message));
+    redirect("/admin/contas?erro=" + encodeURIComponent(e.message));
   }
   refreshLayout();
-  redirect("/admin/autores?ok=salvo");
+  redirect("/admin/contas?ok=salvo");
 }
 
 export async function removeUser(formData) {
   if (!(await isAdmin())) redirect("/admin");
   try {
-    await deleteUser(formData.get("id"));
+    await deleteUser(formData.get("id"), { keepPosts: formData.get("posts") === "manter" });
   } catch (e) {
-    redirect("/admin/autores?erro=" + encodeURIComponent(e.message));
+    redirect("/admin/contas?erro=" + encodeURIComponent(e.message));
   }
   refreshLayout();
-  redirect("/admin/autores?ok=excluido");
+  redirect("/admin/contas?ok=excluido");
 }
