@@ -1,0 +1,406 @@
+import { findPathToNode, scrollToElementWithRetry, truncate } from '@tabnews/helpers';
+import { useTreeCollapse } from '@tabnews/hooks';
+import { clsx } from 'clsx';
+import { getStaticPropsRevalidate } from 'next-swr';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+
+import { AdBanner, Button, Confetti, Content, DefaultLayout, Link, TabCoinButtons, Tooltip } from '@/TabNewsUI';
+import { CommentDiscussionIcon, CommentIcon, FoldIcon, UnfoldIcon } from '@/TabNewsUI/icons';
+import { NotFoundError, ValidationError } from 'errors';
+import webserver from 'infra/webserver.js';
+import authorization from 'models/authorization.js';
+import content from 'models/content.js';
+import removeMarkdown from 'models/remove-markdown.js';
+import user from 'models/user.js';
+
+import classes from './index.module.css';
+
+const initialRenderIntent = 100;
+const renderIncrement = 50;
+
+export default function Post({ contentFound, rootContentFound, parentContentFound, contentMetadata }) {
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [autoExpandPath, setAutoExpandPath] = useState(null);
+
+  const {
+    data: { body: adsFound },
+    isLoading: isLoadingAd,
+  } = useSWR(
+    `/api/v1/sponsored-beta?per_page=1&ignore_id=${contentFound.id}&owner_id=${contentFound.owner_id}&flexible=${contentFound.type === 'content'}`,
+    {
+      fallbackData: { body: [], headers: {} },
+      revalidateOnFocus: false,
+    },
+  );
+
+  useEffect(() => {
+    const justPublishedNewRootContent = localStorage.getItem('justPublishedNewRootContent');
+
+    if (justPublishedNewRootContent) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setShowConfetti(true);
+      localStorage.removeItem('justPublishedNewRootContent');
+    }
+  }, []);
+
+  // Scroll to the target if URL has a hash that matches a child content
+  useEffect(() => {
+    let clearRetryScroll = () => {};
+
+    function handleHashChange({ newURL }) {
+      if (!contentFound?.children) return;
+
+      const hash = newURL.split('#')[1];
+      if (!hash) return;
+
+      const separatorIndex = hash.indexOf('-');
+      if (separatorIndex === -1) return;
+
+      const targetUsername = hash.slice(0, separatorIndex);
+      const targetSlug = hash.slice(separatorIndex + 1);
+      if (!targetUsername?.length || !targetSlug?.length) return;
+
+      const pathToTarget = findPathToNode(
+        contentFound.children,
+        (child) => child.slug === targetSlug && child.owner_username === targetUsername,
+      );
+      if (!pathToTarget) return;
+
+      const targetElement = document.getElementById(hash);
+      if (!targetElement) setAutoExpandPath(pathToTarget);
+
+      clearRetryScroll();
+      clearRetryScroll = scrollToElementWithRetry(hash);
+    }
+
+    handleHashChange({ newURL: window.location.href });
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      clearRetryScroll();
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, [contentFound]);
+
+  return (
+    <>
+      {showConfetti && <Confetti />}
+      <DefaultLayout metadata={contentMetadata}>
+        <InReplyToLinks content={contentFound} parentContent={parentContentFound} rootContent={rootContentFound} />
+
+        <div className={classes.RootContentRow}>
+          <div className={classes.TabCoinColumn}>
+            <TabCoinButtons key={contentFound.id} content={contentFound} />
+            <div className={classes.RootDivider} />
+          </div>
+
+          <div className={clsx(classes.RootContentBody, !contentFound.title && classes.RootContentBodyNoTitle)}>
+            <Content key={contentFound.id} content={contentFound} mode="view" />
+          </div>
+        </div>
+
+        <div className={classes.ReplyBoxWrapper}>
+          <div className={classes.ReplyBox}>
+            <Content
+              key={contentFound.id}
+              content={{
+                owner_id: contentFound.owner_id,
+                owner_username: contentFound.owner_username,
+                parent_id: contentFound.id,
+                slug: contentFound.slug,
+              }}
+              rootContent={rootContentFound || contentFound}
+              mode="compact"
+            />
+          </div>
+
+          <AdBanner ad={adsFound[0]} isLoading={isLoadingAd} className={classes.AdBanner} />
+
+          <RenderChildrenTree
+            key={contentFound.id}
+            autoExpandPath={autoExpandPath}
+            childrenList={contentFound.children}
+            pageRootOwnerId={contentFound.owner_id}
+            renderIntent={initialRenderIntent}
+            rootContent={rootContentFound || contentFound}
+          />
+        </div>
+      </DefaultLayout>
+    </>
+  );
+}
+
+function InReplyToLinks({ content, parentContent, rootContent }) {
+  return (
+    <>
+      {/*          ↱ You are here
+        [root]->[child]->[child]
+      */}
+      {content.parent_id && parentContent.id === rootContent.id && (
+        <div className={classes.InReplyTo}>
+          <div className={classes.InReplyToIcon}>
+            <CommentIcon verticalAlign="middle" size="small" />
+          </div>
+          <div>
+            Em resposta a{' '}
+            {parentContent.status === 'published' && (
+              <Link href={`/${parentContent.owner_username}/${parentContent.slug}`}>
+                <strong>{parentContent.title}</strong>
+              </Link>
+            )}
+            {parentContent.status !== 'published' && (
+              <Tooltip text={`Este conteúdo está atualmente com status "${parentContent.status}"`} direction="s">
+                <strong>[Não disponível]</strong>
+              </Tooltip>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/*                   ↱ You are here
+        [root]->[child]->[child]
+      */}
+      {content.parent_id && parentContent.id !== rootContent.id && (
+        <div className={classes.InReplyTo}>
+          <div className={classes.InReplyToIcon}>
+            <CommentDiscussionIcon verticalAlign="middle" size="small" />
+          </div>
+          <div>
+            Respondendo a{' '}
+            {parentContent.status === 'published' && (
+              <Link href={`/${parentContent.owner_username}/${parentContent.slug}`}>
+                <strong>{`"${parentContent.body}"`}</strong>
+              </Link>
+            )}
+            {parentContent.status !== 'published' && (
+              <Tooltip text={`Este conteúdo está atualmente com status "${parentContent.status}"`} direction="s">
+                <strong>[Não disponível]</strong>
+              </Tooltip>
+            )}
+            {' dentro da publicação '}
+            {rootContent.status === 'published' && (
+              <Link href={`/${rootContent.owner_username}/${rootContent.slug}`}>
+                <strong>{rootContent.title}</strong>
+              </Link>
+            )}
+            {rootContent.status !== 'published' && (
+              <Tooltip text={`Este conteúdo está atualmente com status "${rootContent.status}"`} direction="s">
+                <strong>[Não disponível]</strong>
+              </Tooltip>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function RenderChildrenTree({ autoExpandPath, childrenList, pageRootOwnerId, renderIntent, rootContent }) {
+  const { nodeStates, handleCollapse, handleExpand } = useTreeCollapse({
+    nodes: childrenList,
+    totalBudget: renderIntent,
+    additionalBudget: renderIncrement,
+    defaultExpandedId: autoExpandPath?.[0],
+  });
+
+  return nodeStates.map((child) => {
+    const { children, children_deep_count, collapsedSize, expandedSize, id, owner_id, owner_username, slug, status } =
+      child;
+    const isPublished = status === 'published';
+    const labelShowMore = Math.min(collapsedSize, renderIncrement) || '';
+    const plural = labelShowMore != 1 ? 's' : '';
+    const isPageRootOwner = pageRootOwnerId === owner_id;
+
+    if (!expandedSize && !collapsedSize) return null;
+    if (!isPublished && !children_deep_count) return null;
+
+    return (
+      <div className={classes.ChildRow} key={id}>
+        {expandedSize ? (
+          <>
+            <div className={classes.ChildTabCoinColumn}>
+              <TabCoinButtons content={child} />
+              <Tooltip
+                direction="ne"
+                text={`Ocultar resposta${plural}`}
+                role="button"
+                onClick={() => handleCollapse(id)}
+                className={classes.CollapseHandle}>
+                <div className={classes.FoldIconWrapper}>
+                  <FoldIcon />
+                </div>
+                <div className={classes.ChildDivider} />
+              </Tooltip>
+            </div>
+
+            <div className={classes.ChildContentColumn}>
+              {isPublished && <Content content={child} isPageRootOwner={isPageRootOwner} mode="view" />}
+
+              <div className={clsx(classes.ChildCompactRow, isPublished && classes.ChildCompactRowPublished)}>
+                <Content
+                  content={{ owner_id, owner_username, parent_id: id, slug }}
+                  mode={isPublished ? 'compact' : 'deleted'}
+                  rootContent={rootContent}
+                  viewFrame={true}
+                />
+              </div>
+
+              {children_deep_count > 0 && (
+                <RenderChildrenTree
+                  autoExpandPath={autoExpandPath?.[0] === id ? autoExpandPath?.slice(1) : null}
+                  childrenList={children}
+                  pageRootOwnerId={pageRootOwnerId}
+                  renderIntent={expandedSize - 1}
+                  rootContent={rootContent}
+                />
+              )}
+            </div>
+          </>
+        ) : (
+          <Button onClick={() => handleExpand(id)} variant="invisible" className={classes.ExpandButton}>
+            <UnfoldIcon /> {`Ver mais ${labelShowMore} resposta${plural}`}
+            {labelShowMore != collapsedSize && ` (${collapsedSize} ocultas)`}
+          </Button>
+        )}
+      </div>
+    );
+  });
+}
+
+export async function getStaticPaths() {
+  const relevantResults = await content.findWithStrategy({
+    strategy: 'relevant',
+    where: {
+      parent_id: null,
+      status: 'published',
+    },
+    attributes: {
+      exclude: ['body'],
+    },
+    page: 1,
+    per_page: 100,
+  });
+
+  const paths = relevantResults.rows.map((content) => {
+    return {
+      params: {
+        username: content.owner_username,
+        slug: content.slug,
+      },
+    };
+  });
+
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+}
+
+export const getStaticProps = getStaticPropsRevalidate(async (context) => {
+  const userTryingToGet = user.createAnonymous();
+
+  let contentTreeFound;
+
+  try {
+    contentTreeFound = await content.findTree({
+      where: {
+        owner_username: context.params.username,
+        slug: context.params.slug,
+      },
+    });
+
+    if (!contentTreeFound?.length) {
+      throw new NotFoundError({
+        message: `O conteúdo informado não foi encontrado no sistema.`,
+        action: 'Verifique se o "slug" está digitado corretamente.',
+        stack: new Error().stack,
+        errorLocationCode: 'PAGES:USERNAME:SLUG:GET_STATIC_PROPS:SLUG_NOT_FOUND',
+        key: 'slug',
+      });
+    }
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return {
+        notFound: true,
+      };
+    }
+
+    if (error instanceof NotFoundError) {
+      return {
+        notFound: true,
+        revalidate: 1,
+      };
+    }
+
+    throw error;
+  }
+
+  const secureContentTree = authorization.filterOutput(userTryingToGet, 'read:content:list', contentTreeFound);
+
+  const secureContentFound = secureContentTree[0];
+
+  const oneLineBody = removeMarkdown(secureContentFound.body, { maxLength: 190 });
+
+  const contentMetadata = {
+    title: `${secureContentFound.title ?? truncate(oneLineBody, 80)} · ${secureContentFound.owner_username}`,
+    image: `${webserver.host}/api/v1/contents/${secureContentFound.owner_username}/${secureContentFound.slug}/thumbnail`,
+    url: `${webserver.host}/${secureContentFound.owner_username}/${secureContentFound.slug}`,
+    description: oneLineBody,
+    published_time: secureContentFound.published_at,
+    modified_time: secureContentFound.updated_at,
+    author: secureContentFound.owner_username,
+    type: 'article',
+    canonical: secureContentFound.parent_id
+      ? undefined
+      : `${webserver.host}/${secureContentFound.owner_username}/${secureContentFound.slug}`,
+    noIndex: secureContentFound.type === 'ad',
+  };
+
+  let secureRootContentFound = null;
+  let secureParentContentFound = null;
+
+  if (contentTreeFound[0].path.length > 1) {
+    const rootContentFound = await content.findOne({
+      where: {
+        id: contentTreeFound[0].path[0],
+      },
+      attributes: { exclude: ['body'] },
+    });
+
+    secureRootContentFound = authorization.filterOutput(userTryingToGet, 'read:content', rootContentFound);
+
+    const parentContentFound = await content.findOne({
+      where: {
+        id: secureContentFound.parent_id,
+      },
+    });
+
+    parentContentFound.body = removeMarkdown(parentContentFound.body, { maxLength: 50 });
+    secureParentContentFound = authorization.filterOutput(userTryingToGet, 'read:content', parentContentFound);
+  }
+
+  if (contentTreeFound[0].path.length === 1) {
+    const parentContentFound = await content.findOne({
+      where: {
+        id: secureContentFound.parent_id,
+      },
+      attributes: { exclude: ['body'] },
+    });
+
+    secureParentContentFound = authorization.filterOutput(userTryingToGet, 'read:content', parentContentFound);
+
+    secureRootContentFound = { id: secureParentContentFound.id, title: secureParentContentFound.title };
+  }
+
+  return {
+    props: {
+      contentFound: JSON.parse(JSON.stringify(secureContentFound)),
+      rootContentFound: JSON.parse(JSON.stringify(secureRootContentFound)),
+      parentContentFound: JSON.parse(JSON.stringify(secureParentContentFound)),
+      contentMetadata: JSON.parse(JSON.stringify(contentMetadata)),
+    },
+    revalidate: 1,
+    swr: { revalidateOnFocus: false },
+  };
+});

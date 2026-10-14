@@ -1,0 +1,13 @@
+/* Identidade visual MediaLake (sobrepõe o tema base) */
+:root {
+  --medialake-accent: #0b7a96;
+}
+[data-color-mode='dark'], [data-color-mode='dark'][data-dark-theme='dark'] {
+  --medialake-accent: #4cc2e0;
+}
+#header {
+  background-color: #0a4a5c !important;
+  border-bottom: 3px solid #14a3c7;
+}
+a:not(#header a) { --fgColor-accent: var(--medialake-accent); }
+:root { --fgColor-accent: var(--medialake-accent); --bgColor-accent-emphasis: var(--medialake-accent); --borderColor-accent-emphasis: var(--medialake-accent); }
