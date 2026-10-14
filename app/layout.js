@@ -21,6 +21,7 @@ export default function RootLayout({ children }) {
               <Link href="/">Publicações</Link>
               <Link href="/topicos">Tópicos</Link>
               <Link href="/sobre">Sobre</Link>
+              <Link href="/admin" prefetch={false}>Admin</Link>
             </nav>
           </div>
         </header>
