@@ -1,27 +1,34 @@
 "use server";
+import crypto from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { addLike } from "@/lib/posts";
+import { getSession } from "@/lib/auth";
+import { hasLiked, toggleLike as toggle } from "@/lib/posts";
 
-// Lembra no navegador quais posts já foram curtidos (sem contas de usuário).
-const COOKIE = "ml_likes";
+// Quem está curtindo: a conta logada (cada conta tem a sua curtida) ou,
+// sem login, um identificador aleatório guardado no navegador.
+const VOTER = "ml_voter";
 const MAX_AGE = 60 * 60 * 24 * 365;
 
-export async function likedIds() {
-  const v = (await cookies()).get(COOKIE)?.value || "";
-  return v.split(".").map(Number).filter(Boolean);
+async function voter({ create = false } = {}) {
+  const s = await getSession().catch(() => null);
+  if (s) return s.admin ? "admin" : `u${s.id}`;
+  const c = await cookies();
+  let v = c.get(VOTER)?.value;
+  if (!/^a[0-9a-f]{32}$/.test(v || "")) {
+    if (!create) return null;
+    v = "a" + crypto.randomBytes(16).toString("hex");
+    c.set(VOTER, v, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: MAX_AGE });
+  }
+  return v;
 }
 
-export async function toggleLike(id) {
-  id = Number(id) || 0;
-  const liked = await likedIds();
-  const was = liked.includes(id);
-  const total = await addLike(id, was ? -1 : 1);
-  if (total === null) return null;
-  const next = was ? liked.filter((x) => x !== id) : [...liked, id].slice(-500);
-  (await cookies()).set(COOKIE, next.join("."), {
-    httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: MAX_AGE,
-  });
-  revalidatePath("/", "layout"); // atualiza "Mais curtidos" na lateral
-  return { liked: !was, total };
+export async function isLiked(postId) {
+  return hasLiked(Number(postId) || 0, await voter());
+}
+
+export async function toggleLike(postId) {
+  const r = await toggle(Number(postId) || 0, await voter({ create: true }));
+  if (r) revalidatePath("/", "layout"); // atualiza pódio e "Mais curtidos"
+  return r;
 }

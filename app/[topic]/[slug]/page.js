@@ -5,7 +5,7 @@ import { getAuthorProfile } from "@/lib/profiles";
 import AuthorCard from "../../AuthorCard";
 import RailSlot from "../../RailSlot";
 import LikeButton from "../../LikeButton";
-import { likedIds } from "../../likes";
+import { isLiked } from "../../likes";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +37,7 @@ export default async function PostPage({ params }) {
       <article dangerouslySetInnerHTML={{ __html: p.html }} />
       <div className="likebar">
         <span className="meta">Gostou? Deixe sua curtida.</span>
-        <LikeButton id={p.id} initialTotal={p.likes} initialLiked={(await likedIds()).includes(p.id)} />
+        <LikeButton id={p.id} initialTotal={p.likes} initialLiked={await isLiked(p.id)} />
       </div>
     </>
   );

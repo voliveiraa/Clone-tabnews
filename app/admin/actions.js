@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { adminConfigured, endSession, getSession, isAdmin, passwordOk, startSession } from "@/lib/auth";
-import { createTopic, deletePost, deleteTopic, getPostById, getTopics, savePost, updateTopic } from "@/lib/posts";
+import { createTopic, deletePost, deleteTopic, getPostById, getTopics, postPath, savePost, updateTopic } from "@/lib/posts";
 import { saveAdminProfile } from "@/lib/profiles";
 import { createUser, deleteUser, getUserByUsername, setUserStatus, updateUserProfile, verifyPassword } from "@/lib/users";
 
@@ -24,7 +24,7 @@ export async function login(formData) {
     if (!passwordOk(senha)) { await slow(); redirect("/admin?erro=1"); }
     await startSession("admin");
     refreshLayout();
-    redirect("/admin");
+    redirect("/"); // entrou: vai para as publicações (o painel fica no topo)
   }
   const u = username ? await getUserByUsername(username) : null;
   if (!u || !(await verifyPassword(senha, u.password_hash))) { await slow(); redirect("/admin?erro=1"); }
@@ -32,7 +32,7 @@ export async function login(formData) {
   if (u.status !== "approved") redirect("/admin?erro=bloqueado");
   await startSession(`u${u.id}`);
   refreshLayout();
-  redirect("/admin");
+  redirect("/");
 }
 
 export async function logout() {
@@ -101,13 +101,15 @@ export async function save(formData) {
 
   if (id && !(await canEdit(session, id))) redirect("/admin");
 
+  let saved;
   try {
-    await savePost({ id, title, topic, date, summary, body, draft, authorId: session.id });
+    saved = await getPostById(await savePost({ id, title, topic, date, summary, body, draft, authorId: session.id }));
   } catch (e) {
     redirect(`/admin?erro=${encodeURIComponent("Falha ao salvar: " + e.message)}`);
   }
   refreshLayout();
-  redirect("/admin?ok=salvo");
+  // Publicado: abre a publicação. Rascunho (ainda fora do ar): volta para o painel.
+  redirect(saved && !saved.draft ? postPath(saved) : "/admin?ok=salvo");
 }
 
 export async function remove(formData) {
