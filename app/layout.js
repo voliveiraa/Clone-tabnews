@@ -56,11 +56,6 @@ export default async function RootLayout({ children }) {
           </aside>
           <div className="content">{children}</div>
           <aside className="side right">
-            <section className="card">
-              <h2>Sobre o {SITE.name}</h2>
-              <p>{SITE.description}</p>
-              <Link href="/sobre">Saiba mais →</Link>
-            </section>
             {liked.length > 0 && (
               <section className="card">
                 <h2>Mais curtidos</h2>
@@ -78,9 +73,6 @@ export default async function RootLayout({ children }) {
                 <Link href="/cadastro">Criar conta →</Link>
               </section>
             )}
-            <section className="card">
-              <a href="/rss.xml">Assinar o RSS</a>
-            </section>
           </aside>
         </main>
         <footer className="bottom">
