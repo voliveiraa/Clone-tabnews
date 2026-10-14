@@ -29,7 +29,6 @@ export default async function RootLayout({ children }) {
             <nav>
               <Link href="/">Publicações</Link>
               <Link href="/topicos">Tópicos</Link>
-              <Link href="/sobre">Sobre</Link>
             </nav>
             <div className="account">
               {session
