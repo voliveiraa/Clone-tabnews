@@ -45,7 +45,7 @@ npm run dev      # http://localhost:3000
 
 ## Segurança do admin
 
-- A senha é comparada no servidor; a sessão é um cookie assinado, `httpOnly` e `sameSite=strict`, que dura 8 horas
+- A senha é comparada no servidor; a sessão é um cookie assinado, `httpOnly` e `sameSite=strict`, que dura 30 dias
   e só vale em `/admin`.
 - Senha errada espera ~1 s antes de responder, o que freia tentativas em sequência. Use uma senha longa.
 - `/admin` não é indexado (`robots`) e as ações de salvar e excluir revalidam a sessão no servidor.
