@@ -27,6 +27,7 @@ export default async function PostPage({ params }) {
       <h1>{p.title}</h1>
       <p className="meta postmeta">
         <Link href={`/topicos/${p.topic.slug}`}>{p.topic.name}</Link> · {formatDate(p.date)} · {p.minutes} min de leitura
+        {p.author && <> · por {p.author}</>}
       </p>
       <article dangerouslySetInnerHTML={{ __html: p.html }} />
       <div className="likebar">

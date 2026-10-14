@@ -1,21 +1,23 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { isAdmin } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getPostById, getTopics } from "@/lib/posts";
 import { save } from "../actions";
 import DeleteButton from "../DeleteButton";
+import ImageUpload from "../ImageUpload";
 
 export const dynamic = "force-dynamic";
 
 export default async function Editor({ searchParams }) {
-  if (!(await isAdmin())) redirect("/admin");
+  const session = await getSession();
+  if (!session) redirect("/admin");
   const sp = await searchParams;
   const id = Number(sp.id) || 0;
   const topics = await getTopics();
   let v = { title: "", topic: topics[0]?.slug || "", date: new Date().toISOString().slice(0, 10), summary: "", body: "", draft: false };
   if (id) {
     const p = await getPostById(id);
-    if (!p) redirect("/admin");
+    if (!p || (!session.admin && p.authorId !== session.id)) redirect("/admin");
     v = { title: p.title, topic: p.topic.slug, date: p.date, summary: p.summary, body: p.body, draft: p.draft };
   }
   return (
@@ -35,7 +37,8 @@ export default async function Editor({ searchParams }) {
           <label>Data<input type="date" name="date" defaultValue={v.date} required /></label>
         </div>
         <label>Resumo (opcional)<input name="summary" defaultValue={v.summary} /></label>
-        <label>Texto em Markdown<textarea name="body" rows={20} defaultValue={v.body} required /></label>
+        <label>Texto em Markdown<textarea id="body" name="body" rows={20} defaultValue={v.body} required /></label>
+        <ImageUpload target="body" />
         <label className="check"><input type="checkbox" name="draft" defaultChecked={v.draft} /> Rascunho (não aparece no site)</label>
         <button type="submit">Salvar e publicar</button>
       </form>

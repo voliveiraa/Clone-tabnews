@@ -75,3 +75,15 @@ button.link.danger-link { color: #d1242f; font-size: inherit; }
 @media (max-width: 520px) { .form.topic-row { grid-template-columns: 1fr; } }
 .err { color: #d1242f; } .ok { color: #1a7f37; }
 @media (max-width: 520px) { .form .row { grid-template-columns: 1fr; } }
+header.top .account { margin-left: auto; display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--muted); }
+header.top .account a:hover { color: var(--fg); text-decoration: none; }
+header.top .account .who { color: var(--fg); max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+header.top .account form { display: inline; }
+header.top .account button.link { color: var(--muted); font-size: 14px; }
+@media (max-width: 520px) { header.top .account .who { display: none; } }
+.adminbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; }
+.badge { display: inline-block; margin-left: 6px; min-width: 1.4em; padding: 0 .4em; border-radius: 999px; background: #d1242f; color: #fff; font-size: 12px; text-align: center; }
+.status.pending { color: #bf8700; } .status.approved { color: #1a7f37; } .status.blocked { color: #d1242f; }
+.upload { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: -6px; }
+button.secondary { background: none; color: var(--fg); border-color: var(--line); }
+button.secondary:hover { border-color: var(--accent); }

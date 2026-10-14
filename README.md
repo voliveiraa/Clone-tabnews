@@ -2,7 +2,9 @@
 
 Site de fundamentos de broadcast no formato do TabNews: lista numerada de publicações, páginas de post,
 tópicos e RSS. Os posts ficam no **PostgreSQL** e são escritos pelo próprio site, em `/admin`.
-**Sem contas de usuário:** existe uma única senha de admin, definida em variável de ambiente.
+O **admin** entra com o usuário `admin` e a senha da variável `ADMIN_PASSWORD`. **Autores** criam conta em
+`/cadastro` e só publicam depois de aprovados pelo admin; cada autor edita apenas os próprios posts.
+Tópicos e autores são gerenciados só pelo admin.
 
 ## Subir na Vercel
 
@@ -14,19 +16,28 @@ tópicos e RSS. Os posts ficam no **PostgreSQL** e são escritos pelo próprio s
    |---|---|
    | `DATABASE_URL` | string de conexão do Postgres |
    | `ADMIN_PASSWORD` | a senha do /admin (use uma senha longa e só sua) |
+   | `BLOB_READ_WRITE_TOKEN` | criada ao conectar um **Vercel Blob** (Storage → Blob) ao projeto; ativa o envio de fotos |
 
-3. Suba o código para o GitHub e faça o deploy. A tabela `posts` é criada sozinha na primeira consulta
+   As integrações podem criar as variáveis com prefixo (ex.: `storage_DATABASE_URL`); o site aceita os dois nomes.
+
+3. Suba o código para o GitHub e faça o deploy. As tabelas são criadas sozinhas na primeira consulta
    (não há migrations para rodar).
 4. Domínio: Settings → Domains → `medialake.com.br`.
 5. Se o seu GitHub Action usa `vercel build`, rode antes `vercel pull --environment=production`.
 
 ## Publicar
 
-Acesse `medialake.com.br/admin`, entre com a senha e use **+ Nova publicação**: título, tópico, data,
-resumo (opcional) e texto em Markdown (títulos, listas, tabelas, código, imagens por URL).
+Acesse `medialake.com.br/admin` (ou **Entrar**, no canto do topo) e use **+ Nova publicação**: título, tópico, data,
+resumo (opcional) e texto em Markdown (títulos, listas, tabelas, código, imagens). O botão **📷 Inserir foto**
+envia a imagem (JPG, PNG, WebP ou GIF, até 4 MB) para o Vercel Blob e coloca no texto.
 Dá para salvar como **rascunho**, editar e excluir. Publicou, já está no ar (sem novo deploy).
 
-Para trocar a senha: mude `ADMIN_PASSWORD` na Vercel e faça redeploy.
+Para trocar a senha: mude `ADMIN_PASSWORD` na Vercel e faça redeploy (isso desconecta todo mundo, admin e autores).
+
+## Autores
+
+Em **Admin → Autores**: aprovar, bloquear ou excluir contas. Bloquear tira o acesso na hora; excluir mantém
+os posts no site, sem autor.
 
 ## Tópicos
 
