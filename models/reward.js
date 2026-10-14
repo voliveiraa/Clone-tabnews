@@ -1,0 +1,122 @@
+import database from 'infra/database';
+import balance from 'models/balance';
+import content from 'models/content.js';
+import event from 'models/event';
+import prestige from 'models/prestige';
+import user from 'models/user';
+
+const tabcoinsBase = 20;
+const contentAgeBase = 604_800_000; // one week in milliseconds
+
+export default async function reward(request) {
+  if (request?.context?.user?.tabcoins === undefined) return 0;
+
+  const { id: userId, username, tabcoins, rewarded_at: rewardedAt } = request.context.user;
+
+  if (!userId || !username || !rewardedAt) return 0;
+
+  // Shortcut for the common case; the source of truth is the `WHERE` of the conditional update.
+  if (rewardedAt >= new Date().setUTCHours(0, 0, 0, 0)) return 0;
+
+  const prestigeFactor = await prestige.getByUserId(userId);
+  const tabcoinsFactor = calcTabcoinsFactor(tabcoins);
+
+  let reward = 0;
+
+  if (tabcoinsFactor <= prestigeFactor) {
+    const contentAgeFactor = await getContentAgeFactor(userId);
+    reward = calcReward(prestigeFactor, tabcoinsFactor, contentAgeFactor);
+  }
+
+  reward = await saveReward(request, reward);
+
+  return reward;
+}
+
+function calcTabcoinsFactor(tabcoins) {
+  if (tabcoins <= 0) return 0;
+
+  const tabcoinsFactor = Math.floor((tabcoins / tabcoinsBase) ** 2);
+
+  return tabcoinsFactor;
+}
+
+async function getContentAgeFactor(owner_id) {
+  const contents = await content.findWithStrategy({
+    strategy: 'new',
+    where: {
+      owner_id,
+      status: 'published',
+      type: 'content',
+    },
+    per_page: 1,
+  });
+
+  const lastContent = contents?.rows?.[0];
+
+  if (!lastContent) return 0;
+
+  const lastContentAge = new Date() - new Date(lastContent.created_at);
+
+  return Math.ceil(lastContentAge / contentAgeBase);
+}
+
+function calcReward(prestige, tabcoinsFactor, contentAgeFactor) {
+  if (!contentAgeFactor || prestige <= tabcoinsFactor) return 0;
+
+  const reward = Math.ceil((prestige - tabcoinsFactor) / contentAgeFactor);
+
+  return reward;
+}
+
+async function saveReward(request, reward) {
+  const transaction = await database.transaction();
+
+  try {
+    await transaction.query('BEGIN');
+
+    const isFirstRewardToday = await user.updateRewardedAtIfStale(request.context.user.id, { transaction });
+
+    // Without an updated row, a concurrent request already rewarded the user today.
+    if (!isFirstRewardToday) {
+      await transaction.query('ROLLBACK');
+      return 0;
+    }
+
+    if (reward > 0) {
+      const currentEvent = await event.create(
+        {
+          type: 'reward:user:tabcoins',
+          originator_user_id: request.context.user.id,
+          originator_ip: request.context.clientIp,
+          metadata: {
+            reward_type: 'daily',
+            amount: reward,
+          },
+        },
+        { transaction },
+      );
+
+      await balance.create(
+        {
+          balanceType: 'user:tabcoin',
+          recipientId: request.context.user.id,
+          amount: reward,
+          originatorType: 'event',
+          originatorId: currentEvent.id,
+        },
+        { transaction },
+      );
+    }
+
+    await transaction.query('COMMIT');
+
+    return reward;
+  } catch (error) {
+    await transaction.query('ROLLBACK');
+
+    throw error;
+  } finally {
+    await transaction.release();
+  }
+}
