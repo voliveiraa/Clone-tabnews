@@ -145,3 +145,18 @@ button.swatch.on { border-color: var(--fg); box-shadow: 0 0 0 2px var(--accent);
 .podium .step-1 .block { height: 54px; border-color: #d4a72c; }
 .podium .step-2 .block { height: 38px; }
 .podium .step-3 .block { height: 28px; }
+/* Editor: barra de formatação e prévia */
+.editor-field { display: grid; gap: 0; }
+.editor-field > label { font-size: 14px; color: var(--muted); margin-bottom: 4px; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 6px; border: 1px solid var(--line);
+  border-bottom: 0; border-radius: 6px 6px 0 0; background: var(--soft); position: sticky; top: 0; z-index: 2; }
+.editor-field textarea, .editor-field .preview { border-top-left-radius: 0; border-top-right-radius: 0; }
+button.tb { background: none; color: var(--fg); border: 1px solid transparent; border-radius: 5px; padding: 3px 9px; font-size: 14px; min-width: 32px; }
+button.tb:hover:not(:disabled) { border-color: var(--line); background: var(--bg); }
+button.tb:disabled { opacity: .4; cursor: default; }
+button.tb-preview { border-color: var(--line); }
+button.tb-preview.on { border-color: var(--accent); color: var(--accent); }
+.tb-sep { width: 1px; height: 20px; background: var(--line); margin: 0 4px; }
+.tb-grow { flex: 1; }
+.form .toolbar .tb-select { width: auto; font: inherit; font-size: 13px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; }
+.editor-field .preview { min-height: 300px; border: 1px solid var(--line); border-radius: 0 0 6px 6px; padding: 12px 16px; background: var(--bg); }

@@ -5,6 +5,7 @@ import { getPostById, getTopics } from "@/lib/posts";
 import { save } from "../actions";
 import DeleteButton from "../DeleteButton";
 import ImageUpload from "../ImageUpload";
+import Toolbar from "../Toolbar";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +38,11 @@ export default async function Editor({ searchParams }) {
           <label>Data<input type="date" name="date" defaultValue={v.date} required /></label>
         </div>
         <label>Resumo (opcional)<input name="summary" defaultValue={v.summary} /></label>
-        <label>Texto em Markdown<textarea id="body" name="body" rows={20} defaultValue={v.body} required /></label>
+        <div className="editor-field">
+          <label htmlFor="body">Texto</label>
+          <Toolbar target="body" />
+          <textarea id="body" name="body" rows={20} defaultValue={v.body} required />
+        </div>
         <ImageUpload target="body" />
         <label className="check"><input type="checkbox" name="draft" defaultChecked={v.draft} /> Rascunho (não aparece no site)</label>
         <button type="submit">Salvar e publicar</button>
