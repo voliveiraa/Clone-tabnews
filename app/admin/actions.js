@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { adminConfigured, endSession, getSession, isAdmin, passwordOk, startSession } from "@/lib/auth";
 import { createTopic, deletePost, deleteTopic, getPostById, getTopics, postPath, savePost, updateTopic } from "@/lib/posts";
 import { saveAdminProfile } from "@/lib/profiles";
+import { plainText, sanitizeBody } from "@/lib/render";
 import { createUser, deleteUser, getUserByUsername, setUserStatus, updateUserProfile, verifyPassword } from "@/lib/users";
 
 // As laterais e o topo ficam no layout, que o navegador guarda entre páginas:
@@ -93,11 +94,13 @@ export async function save(formData) {
   const topic = String(formData.get("topic") || "");
   const date = String(formData.get("date") || "");
   const summary = String(formData.get("summary") || "").trim();
-  const body = String(formData.get("body") || "").replace(/\r\n/g, "\n").trim();
+  // HTML do editor visual, já filtrado aqui (e de novo ao mostrar no site).
+  const body = sanitizeBody(String(formData.get("body") || "")).trim();
+  const empty = !plainText(body) && !/<img\b/i.test(body);
   const draft = formData.get("draft") === "on";
   const back = id ? `/admin/editor?id=${id}&erro=dados` : "/admin/editor?erro=dados";
 
-  if (!title || !body || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !(await getTopics()).some((t) => t.slug === topic)) redirect(back);
+  if (!title || empty || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !(await getTopics()).some((t) => t.slug === topic)) redirect(back);
 
   if (id && !(await canEdit(session, id))) redirect("/admin");
 
